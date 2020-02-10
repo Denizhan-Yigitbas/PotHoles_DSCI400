@@ -36,8 +36,10 @@ class PipedData():
         df_pothole = self.__find_pothole_request(df_service)
         df_pothole.to_csv("../../data/output/potholePiped" + str(year) + ".csv")
 
+    def alex_test(self):
+        pass
 
 if __name__ == "__main__":
     piper = PipedData()
-    year = 2019
+    year = 2018
     piper.create_piped_csv(year)
