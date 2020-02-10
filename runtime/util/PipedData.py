@@ -14,8 +14,10 @@ class PipedData():
     
     # Private method that creates a DataFrame for Pothole Service Request
     def __create_service_dataframe(self, pothole_data):
+        # Reads piped text file of service requests into DataFrame
         df_service = pd.read_csv(pothole_data, delimiter='|', error_bad_lines=False)
         df_service.columns = df_service.columns.str.strip()
+        # Removes spaces before and after strings in every row/column
         df_service_trimmed = df_service.apply(lambda x: x.str.strip() if x.dtype == "object" else x)
         return df_service_trimmed
     
