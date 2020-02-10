@@ -12,14 +12,14 @@ class PipedData():
     def __init__(self):
         pass
     
-    # Create DataFrame for Pothole Service Request
+    # Private method that creates a DataFrame for Pothole Service Request
     def __create_service_dataframe(self, pothole_data):
         df_service = pd.read_csv(pothole_data, delimiter='|', error_bad_lines=False)
         df_service.columns = df_service.columns.str.strip()
         df_service_trimmed = df_service.apply(lambda x: x.str.strip() if x.dtype == "object" else x)
         return df_service_trimmed
     
-    # Finds pothole based service requests
+    # Private method to find pothole based on service requests
     def __find_pothole_request(self, df_service):
         idx = df_service.columns.get_loc('SR TYPE')
         not_pot = []
@@ -30,7 +30,14 @@ class PipedData():
         df_pothole.reset_index()
         return df_pothole
     
+    # Public method that exports a csv of the pothole data into data/outputs/ directory
     def create_piped_csv(self, year):
         df_service = self.__create_service_dataframe(pothole_data[year])
         df_pothole = self.__find_pothole_request(df_service)
         df_pothole.to_csv("../../data/output/potholePiped" + str(year) + ".csv")
+
+
+if __name__ == "__main__":
+    piper = PipedData()
+    year = 2019
+    piper.create_piped_csv(year)

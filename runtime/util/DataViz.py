@@ -61,5 +61,5 @@ if __name__ == "__main__":
     visualizer = DataViz()
     viz_year = 2019
     potholes_df = pd.read_csv(potholes_csv[viz_year])
-    # visualizer.potholes_by_month_viz(potholes_df, 2019)
-    visualizer.overdue_by_month_viz(potholes_df, 2019)
+    # visualizer.potholes_by_month_viz(potholes_df, viz_year)
+    visualizer.overdue_by_month_viz(potholes_df, viz_year)
