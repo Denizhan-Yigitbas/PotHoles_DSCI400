@@ -25,10 +25,13 @@ class PipedData():
     def __find_pothole_request(self, df_service):
         idx = df_service.columns.get_loc('SR TYPE')
         not_pot = []
+        # Find the row index of all service requests unrelated to potholes and compile into list
         for i in range(len(df_service)):
             if df_service.iloc[i, idx] != 'Pothole':
                 not_pot.append(i)
+        # Remove all indexed rows from DataFrame
         df_pothole = df_service.drop(not_pot)
+        # Reset index of DataFrame
         df_pothole.reset_index()
         return df_pothole
     
