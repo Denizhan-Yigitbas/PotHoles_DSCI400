@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import calendar
+import gmplot
 
 
 class DataViz():
@@ -50,6 +51,25 @@ class DataViz():
         plt.ylabel("Days")
         plt.subplots_adjust(bottom=.2)
         plt.show()
+        
+    def pothole_heat_map(self, potholes_df, year):
+        # extract latitudes data - clean Nan and Unknown entries - convert to floats
+        latitudes = potholes_df["LATITUDE"].dropna()
+        latitudes = latitudes[~latitudes.str.contains("Unknown")]
+        latitudes = latitudes.apply(lambda x: float(x))
+
+        # extract longitude data - clean Nan and Unknown entries - convert to floats
+        longitudes = potholes_df["LONGITUDE"].dropna()
+        longitudes = longitudes[~longitudes.str.contains("Unknown")]
+        longitudes = longitudes.apply(lambda x: float(x))
+        
+        # Creating the location we would like to initialize the focus on.
+        # Parameters: Lattitude, Longitude, Zoom
+        gmap = gmplot.GoogleMapPlotter(29.7604, -95.3698, 10)
+
+        # create the map
+        gmap.heatmap(latitudes, longitudes)
+        gmap.draw("../../data/output/pothole_heatmap_" + str(year) + ".html")
  
 potholes_csv = {
     2019: "../../data/output/potholePiped2019.csv",
@@ -62,4 +82,5 @@ if __name__ == "__main__":
     viz_year = 2019
     potholes_df = pd.read_csv(potholes_csv[viz_year])
     # visualizer.potholes_by_month_viz(potholes_df, viz_year)
-    visualizer.overdue_by_month_viz(potholes_df, viz_year)
+    # visualizer.overdue_by_month_viz(potholes_df, viz_year)
+    visualizer.pothole_heat_map(potholes_df, 2019)
