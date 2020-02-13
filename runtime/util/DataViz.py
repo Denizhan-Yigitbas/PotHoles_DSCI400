@@ -70,7 +70,20 @@ class DataViz():
         # create the map
         gmap.heatmap(latitudes, longitudes)
         gmap.draw("../../data/output/pothole_heatmap_" + str(year) + ".html")
- 
+        
+    def channel_type_count(self, potholes_df, year):
+        # count the number of occurences for each Channel Type
+        channel_count = potholes_df["Channel Type"].groupby(potholes_df["Channel Type"]).count()
+        
+        # plot the visual
+        channel_count.plot(kind="bar", legend=False)
+        plt.axhline()
+        plt.title("Various Ways of Reporting in " + str(year))
+        plt.ylabel("Count")
+        plt.subplots_adjust(bottom=.28)
+        plt.show()
+
+
 potholes_csv = {
     2019: "../../data/output/potholePiped2019.csv",
     2018: "../../data/output/potholePiped2018.csv",
@@ -83,4 +96,6 @@ if __name__ == "__main__":
     potholes_df = pd.read_csv(potholes_csv[viz_year])
     # visualizer.potholes_by_month_viz(potholes_df, viz_year)
     # visualizer.overdue_by_month_viz(potholes_df, viz_year)
-    visualizer.pothole_heat_map(potholes_df, 2019)
+    # visualizer.pothole_heat_map(potholes_df, 2019)\
+    visualizer.channel_type_count(potholes_df, 2019)
+    
