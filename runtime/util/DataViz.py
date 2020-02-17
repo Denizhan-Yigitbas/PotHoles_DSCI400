@@ -4,7 +4,7 @@ import calendar
 import gmplot
 import matplotlib.dates as mdates
 
-from .WeatherVSPothole import WeatherVSPotholes
+from util.WeatherVSPothole import WeatherVSPotholes
 
 
 class DataViz():
