@@ -2,6 +2,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import calendar
 import gmplot
+import matplotlib.dates as mdates
+
+from runtime.util.WeatherVSPothole import WeatherVSPotholes
 
 
 class DataViz():
@@ -83,6 +86,23 @@ class DataViz():
         plt.subplots_adjust(bottom=.28)
         plt.show()
 
+    def single_station_percip(self):
+        comparer = WeatherVSPotholes()
+        df = comparer.create_2019_2020_df()
+        single_df = comparer.single_station_explore(df, "US1TXBEL016")
+        x = list(single_df.date)
+        y = list(single_df.value)
+
+        fig, ax = plt.subplots()
+        ax.plot_date(x,y,xdate=True, fmt="r-")
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%b-%Y"))
+        ax.xaxis.set_minor_formatter(mdates.DateFormatter("%b-%Y"))
+        ax.xaxis.set_major_locator(mdates.MonthLocator(interval=1))
+        plt.xticks(rotation=45)
+        plt.title("Precipitation Values for US1TXBEL016 in the Past Year")
+        plt.show()
+        
+        
 
 potholes_csv = {
     2019: "../../data/output/potholePiped2019.csv",
@@ -97,5 +117,5 @@ if __name__ == "__main__":
     # visualizer.potholes_by_month_viz(potholes_df, viz_year)
     # visualizer.overdue_by_month_viz(potholes_df, viz_year)
     # visualizer.pothole_heat_map(potholes_df, 2019)\
-    visualizer.channel_type_count(potholes_df, 2019)
-    
+    # visualizer.channel_type_count(potholes_df, 2019)
+    visualizer.single_station_percip()

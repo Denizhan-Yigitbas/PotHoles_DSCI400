@@ -26,7 +26,17 @@ class WeatherVSPotholes():
         one_year_df = df.loc[one_year_row:]
         return one_year_df
     
+    def __extract_precip_data(self, weather_df):
+        precip_df = weather_df[weather_df["reading_type"] == "PRCP"]
+        return precip_df
         
+    def single_station_explore(self, weather_df, station_id):
+        p_df = self.__extract_precip_data(weather_df)
+        single = p_df[p_df["station_id"] == station_id]
+        single["date"] = pd.to_datetime(single["date"], format='%Y%m%d')
+        return single
+    
 if __name__ == "__main__":
     comparer = WeatherVSPotholes()
-    comparer.create_2019_2020_df()
+    df = comparer.create_2019_2020_df()
+    df2 = comparer.single_station_explore(df)
