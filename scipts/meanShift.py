@@ -27,7 +27,7 @@ def expand_range(coor, rang, mini, ax):
 	return percent * 365
 
 
-pot_df = pd.read_csv('potholepiped2019.csv')
+pot_df = pd.read_csv('../data/output/potholepiped2019.csv')
 
 dt_map = {12:334, 11:304, 10:273, 9:243, 8:212, 7:181, 6:151, 5:120,4:90,3:59, 2:31, 1:0} #mapping of months to days
 
