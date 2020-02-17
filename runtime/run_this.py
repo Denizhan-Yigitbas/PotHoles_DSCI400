@@ -1,7 +1,7 @@
 import fire
 import pandas as pd
 
-from util.DataViz import DataViz
+from .util.DataViz import DataViz
 
 # For Fire CLI
 class FireCLI:
