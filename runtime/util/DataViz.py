@@ -4,13 +4,16 @@ import calendar
 import gmplot
 import matplotlib.dates as mdates
 
-from runtime.util.WeatherVSPothole import WeatherVSPotholes
+from util.WeatherVSPothole import WeatherVSPotholes
 
 
 class DataViz():
     def __init__(self):
         pass
     
+    """
+    Produce a pothole count vs time bar graph for a specific year
+    """
     def potholes_by_month_viz(self, potholes_df, year):
         # convert the the dates into datetime objects
         potholes_df["SR CREATE DATE"] = pd.to_datetime(potholes_df["SR CREATE DATE"])
@@ -34,6 +37,9 @@ class DataViz():
         plt.subplots_adjust(bottom=.2)
         plt.show()
         
+    """
+    Produce the average overdue time to repair a pothole vs time for a given year
+    """
     def overdue_by_month_viz(self, potholes_df, year):
         # calculate the average number of overdue days for every month of the year
         potholes_df["SR CREATE DATE"] = pd.to_datetime(potholes_df["SR CREATE DATE"])
@@ -55,6 +61,9 @@ class DataViz():
         plt.subplots_adjust(bottom=.2)
         plt.show()
         
+    """
+    Produce a heat map of the amount of pothole service reports for a given year
+    """
     def pothole_heat_map(self, potholes_df, year):
         # extract latitudes data - clean Nan and Unknown entries - convert to floats
         latitudes = potholes_df["LATITUDE"].dropna()
@@ -74,6 +83,11 @@ class DataViz():
         gmap.heatmap(latitudes, longitudes)
         gmap.draw("../../data/output/pothole_heatmap_" + str(year) + ".html")
         
+    """
+    Produce a count vs channel type bar graph for potholes in a given year.
+    
+    Channel Type is the method of reporting a potholes i.e. Web, Phone, etc.
+    """
     def channel_type_count(self, potholes_df, year):
         # count the number of occurences for each Channel Type
         channel_count = potholes_df["Channel Type"].groupby(potholes_df["Channel Type"]).count()
@@ -86,6 +100,9 @@ class DataViz():
         plt.subplots_adjust(bottom=.28)
         plt.show()
 
+    """
+    Produce a line graph of reported precipitation values over time for a single station
+    """
     def single_station_percip(self):
         comparer = WeatherVSPotholes()
         df = comparer.create_2019_2020_df()
@@ -99,6 +116,7 @@ class DataViz():
         ax.xaxis.set_minor_formatter(mdates.DateFormatter("%b-%Y"))
         ax.xaxis.set_major_locator(mdates.MonthLocator(interval=1))
         plt.xticks(rotation=45)
+        plt.subplots_adjust(bottom=.28)
         plt.title("Precipitation Values for US1TXBEL016 in the Past Year")
         plt.show()
         
