@@ -8,7 +8,7 @@ class WeatherData(object):
     Container class for loading weather data.
     """
 
-    data_path = './data/raw/'
+    data_path = './data/output/'
 
 
     def __init__(self):

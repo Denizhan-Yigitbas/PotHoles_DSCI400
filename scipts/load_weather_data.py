@@ -10,8 +10,8 @@ base_url = "https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/by_year/"
 station_path = "https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt"
 
 # Set these to non-null to save results to a csv file
-data_output_path = '../data/raw/houston_weather.csv'
-stations_output_path = '../data/raw/all_tx_stations.csv'
+data_output_path = '../data/output/houston_weather.csv'
+stations_output_path = '../data/output/all_tx_stations.csv'
 
 station_data = []
 
