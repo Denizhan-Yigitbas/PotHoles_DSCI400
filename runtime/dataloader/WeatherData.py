@@ -15,9 +15,9 @@ class WeatherData(object):
         """
         Loads weather dataframe and merge in the station data for each reading.
         """
-        stations_df = pd.read_csv(WeatherData.data_path + 'all_tx_stations.csv')
-        self.df = pd.read_csv(WeatherData.data_path + 'houston_weather.csv')\
-            .merge(stations_df, on='station_id', how='inner')
+        self.stations_df = pd.read_csv(WeatherData.data_path + 'all_tx_stations.csv')
+        self.weather_df = pd.read_csv(WeatherData.data_path + 'houston_weather.csv')\
+            .merge(self.stations_df, on='station_id', how='inner')
 
         # TODO: process data fields into proper types
 
