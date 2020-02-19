@@ -12,7 +12,7 @@ try:
 except ImportError:
     from io import StringIO
 
-weather_data = "../../data/raw/all_tx_weather.csv"
+weather_data = "../../data/output/all_tx_weather.csv"
 
 class WeatherVSPotholes():
     def __init__(self):
@@ -67,7 +67,7 @@ class WeatherVSPotholes():
     def create_tx_stations_df(self, filepath):
         df = pd.read_csv(filepath)
         return df
-        
+
     def potholes_near_station(self, potholes_df, weather_df, station_id, radius):
         # extract the station's latitude and longitude
         stations_df = self.create_tx_stations_df(stations_data)
@@ -190,8 +190,8 @@ class WeatherVSPotholes():
 
 if __name__ == "__main__":
     
-    weather_data = "../../data/raw/all_tx_weather.csv"
-    stations_data = "../../data/raw/all_tx_stations.csv"
+    weather_data = "../../data/output/all_tx_weather.csv"
+    stations_data = "../../data/output/all_tx_stations.csv"
     
     
     comparer = WeatherVSPotholes()
