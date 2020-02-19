@@ -6,30 +6,17 @@ import matplotlib.dates as mdates
 
 from util.WeatherVSPothole import WeatherVSPotholes
 
+from util.PotholeServiceRequests import PotholeServiceRequests
 
 class DataViz():
     def __init__(self):
-        pass
+        self.sr = PotholeServiceRequests()
     
     """
     Produce a pothole count vs time bar graph for a specific year
     """
-    def potholes_by_month_viz(self, potholes_df, year):
-        # convert the the dates into datetime objects
-        potholes_df["SR CREATE DATE"] = pd.to_datetime(potholes_df["SR CREATE DATE"])
-        
-        # group the dates by month and count the total number of occurences
-        counts_series = potholes_df["SR CREATE DATE"]\
-            .groupby([potholes_df["SR CREATE DATE"].dt.month])\
-            .count()
-        
-        # change the month numbers to names
-        counts_df = counts_series.to_frame()
-        counts_df["Month"] = list(counts_series.index)
-        counts_df["Month"] = counts_df["Month"].apply(lambda x: calendar.month_abbr[x])
-        counts_df.set_index("Month", inplace=True)
-        counts_df.rename(columns={"SR CREATE DATE":"Number of Potholes"}, inplace=True)
-        
+    def potholes_by_month_single_year_viz(self, potholes_df, year):
+        counts_df = self.sr.potholes_by_month_single_year(potholes_df)
         # plot the visual
         counts_df.plot(kind="bar", legend=False)
         plt.title("Number of Potholes Per Month in " + str(year))
@@ -40,19 +27,8 @@ class DataViz():
     """
     Produce the average overdue time to repair a pothole vs time for a given year
     """
-    def overdue_by_month_viz(self, potholes_df, year):
-        # calculate the average number of overdue days for every month of the year
-        potholes_df["SR CREATE DATE"] = pd.to_datetime(potholes_df["SR CREATE DATE"])
-        avg_overdue = potholes_df["OVERDUE"].groupby([potholes_df["SR CREATE DATE"].dt.month])
-        avg_overdue_series = avg_overdue.mean()
-
-        # change the month numbers to names
-        avg_overdue_df = avg_overdue_series.to_frame()
-        avg_overdue_df["Month"] = list(avg_overdue_series.index)
-        avg_overdue_df["Month"] = avg_overdue_df["Month"].apply(lambda x: calendar.month_abbr[x])
-        avg_overdue_df.set_index("Month", inplace=True)
-        avg_overdue_df.rename(columns={"SR CREATE DATE": "Average Overdue Days"}, inplace=True)
-
+    def overdue_by_month_single_year_viz(self, potholes_df, year):
+        avg_overdue_df = self.sr.overdue_by_month_single_year(potholes_df)
         # plot the visual
         avg_overdue_df.plot(kind="bar", legend=False)
         plt.axhline()
@@ -84,16 +60,18 @@ class DataViz():
         gmap.draw("../../data/output/pothole_heatmap_" + str(year) + ".html")
         
     """
-    Produce a count vs channel type bar graph for potholes in a given year.
+    Produce a count vs channel type bar graph for potholes.
     
     Channel Type is the method of reporting a potholes i.e. Web, Phone, etc.
+    
+    Input note: Year is only used for graph title purposes
     """
     def channel_type_count(self, potholes_df, year):
         # count the number of occurences for each Channel Type
-        channel_count = potholes_df["Channel Type"].groupby(potholes_df["Channel Type"]).count()
+        channel_count_df = self.sr.channel_type_count(potholes_df)
         
         # plot the visual
-        channel_count.plot(kind="bar", legend=False)
+        channel_count_df.plot(kind="bar", legend=False)
         plt.axhline()
         plt.title("Various Ways of Reporting in " + str(year))
         plt.ylabel("Count")
@@ -103,10 +81,13 @@ class DataViz():
     """
     Produce a line graph of reported precipitation values over time for a single station
     """
+    # TODO: Move this to Weather Class
     def single_station_percip(self):
         comparer = WeatherVSPotholes()
         df = comparer.create_2019_2020_df()
         single_df = comparer.single_station_explore(df, "US1TXBEL016")
+        
+        print(single_df)
         x = list(single_df.date)
         y = list(single_df.value)
 
@@ -119,21 +100,19 @@ class DataViz():
         plt.subplots_adjust(bottom=.28)
         plt.title("Precipitation Values for US1TXBEL016 in the Past Year")
         plt.show()
-        
-        
-
-potholes_csv = {
-    2019: "../../data/output/potholePiped2019.csv",
-    2018: "../../data/output/potholePiped2018.csv",
-    2017: "../../data/output/potholePiped2017.csv"
-}
 
 if __name__ == "__main__":
+    potholes_csv = {
+        2019: "../../data/output/potholePiped2019.csv",
+        2018: "../../data/output/potholePiped2018.csv",
+        2017: "../../data/output/potholePiped2017.csv"
+    }
+    
     visualizer = DataViz()
     viz_year = 2019
     potholes_df = pd.read_csv(potholes_csv[viz_year])
-    # visualizer.potholes_by_month_viz(potholes_df, viz_year)
-    # visualizer.overdue_by_month_viz(potholes_df, viz_year)
+    # visualizer.potholes_by_month_single_year_viz(potholes_df, viz_year)
+    # visualizer.overdue_by_month_single_year_viz(potholes_df, viz_year)
     # visualizer.pothole_heat_map(potholes_df, 2019)\
-    # visualizer.channel_type_count(potholes_df, 2019)
-    visualizer.single_station_percip()
+    visualizer.channel_type_count(potholes_df, "2015-2019")
+    # visualizer.single_station_percip()

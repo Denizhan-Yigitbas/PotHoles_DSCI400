@@ -3,11 +3,13 @@ import pandas as pd
 pothole_data = {
     2019: "../../data/raw/311-Public-Data-Extract-2019-clean.txt",
     2018: "../../data/raw/311-Public-Data-Extract-2018-clean.txt",
-    2017: "../../data/raw/311-Public-Data-Extract-2017-clean.txt"
+    2017: "../../data/raw/311-Public-Data-Extract-2017-clean.txt",
+    2016: "../../data/raw/311-Public-Data-Extract-2016-clean.txt",
+    2015: "../../data/raw/311-Public-Data-Extract-2015-clean.txt",
 }
 
 
-class PipedData():
+class GenerateData():
     
     def __init__(self):
         pass
@@ -47,7 +49,21 @@ class PipedData():
         df_pothole = self.__find_pothole_request(df_service)
         df_pothole.to_csv("../../data/output/potholePiped" + str(year) + ".csv")
 
+    """
+    Public method that exports a csv of concatenated pothole csv's over multiple years
+    """
+    def concat_multi_year_potholes(self, start_year, end_year):
+        df_list = []
+        for year in range(start_year, end_year+1, 1):
+            year_df = pd.read_csv("../../data/output/potholePiped" + str(year) + ".csv")
+            df_list.append(year_df)
+        
+        df_final = pd.concat(df_list)
+        df_final.to_csv("../../data/output/potholePiped" + str(start_year) + "-" + str(end_year) + ".csv", index=False)
+            
+    
 if __name__ == "__main__":
-    piper = PipedData()
+    piper = GenerateData()
     year = 2019
-    piper.create_piped_csv(year)
+    # piper.create_piped_csv(year)
+    piper.concat_multi_year_potholes(2015, 2019)
