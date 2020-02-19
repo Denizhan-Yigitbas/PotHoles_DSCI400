@@ -1,9 +1,8 @@
-from collections import deque
 
+from collections import deque
 import math
 from shapely.geometry import Point, Polygon
 from datetime import datetime
-
 import matplotlib.pyplot as plt
 
 import pandas as pd
@@ -192,7 +191,7 @@ if __name__ == "__main__":
     
     weather_data = "../../data/output/all_tx_weather.csv"
     stations_data = "../../data/output/all_tx_stations.csv"
-    
+
     
     comparer = WeatherVSPotholes()
     # weather_df = comparer.create_2019_2020_df()
