@@ -39,6 +39,8 @@ class DataViz():
         
     """
     Produce a heat map of the amount of pothole service reports for a given year
+    
+    Input note: Year is only used for graph title purposes
     """
     def pothole_heat_map(self, potholes_df, year):
         # extract latitudes data - clean Nan and Unknown entries - convert to floats
@@ -105,14 +107,15 @@ if __name__ == "__main__":
     potholes_csv = {
         2019: "../../data/output/potholePiped2019.csv",
         2018: "../../data/output/potholePiped2018.csv",
-        2017: "../../data/output/potholePiped2017.csv"
+        2017: "../../data/output/potholePiped2017.csv",
+        2222: "../../data/output/potholePiped2015-2019.csv"
     }
     
     visualizer = DataViz()
-    viz_year = 2019
+    viz_year = 2222
     potholes_df = pd.read_csv(potholes_csv[viz_year])
     # visualizer.potholes_by_month_single_year_viz(potholes_df, viz_year)
     # visualizer.overdue_by_month_single_year_viz(potholes_df, viz_year)
-    # visualizer.pothole_heat_map(potholes_df, 2019)\
-    visualizer.channel_type_count(potholes_df, "2015-2019")
+    visualizer.pothole_heat_map(potholes_df, "2015-2019")\
+    # visualizer.channel_type_count(potholes_df, "2015-2019")
     # visualizer.single_station_percip()

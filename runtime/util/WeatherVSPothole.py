@@ -85,6 +85,7 @@ class WeatherVSPotholes():
         # create a square polygon
         coords = [bot_left, bot_right, top_right, top_left]
         poly = Polygon(coords)
+        
         print(poly.contains(bot_right))
         # print(poly)
         # poly.contains(coords[0])
