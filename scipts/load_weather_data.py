@@ -10,8 +10,8 @@ base_url = "https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/by_year/"
 station_path = "https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt"
 
 # Set these to non-null to save results to a csv file
-data_output_path = None
-stations_output_path = None
+data_output_path = '../data/raw/houston_weather.csv'
+stations_output_path = '../data/raw/all_tx_stations.csv'
 
 station_data = []
 
@@ -48,10 +48,15 @@ column_headers = ['station_id', 'date', 'reading_type', 'value', 'm_flag', 'q_fl
 start_year = 1950
 end_year = 2020
 
+max_lat, min_lat = 30.13, 29.5
+max_lon, min_lon = -95, -95.8
+
 years = list(range(start_year, end_year + 1))
 
 frames = []
-tx_ids = tx_stations.station_id.values
+houston_ids = tx_stations.loc[
+    (min_lat <= stations.lat) & (stations.lat <= max_lat) & (min_lon <= stations.lon) & (stations.lon <= max_lon)
+].station_id.values
 
 # For each year, download the file for that year to a local file,
 # decompress it using gzip, and create a dataframe with all the Texas data.
@@ -71,7 +76,7 @@ for year in years:
 
     # Create a dataframe containing only data from Texas stations
     df = pd.read_csv(data, header=None, names=column_headers)
-    df = df.loc[df.station_id.isin(tx_ids)]
+    df = df.loc[df.station_id.isin(houston_ids)]
     frames.append(df)
 
     os.remove(fname)
