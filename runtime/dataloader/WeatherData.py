@@ -19,7 +19,7 @@ class WeatherData(object):
         self.weather_df = pd.read_csv('../.' + WeatherData.data_path + 'houston_weather.csv')\
             .merge(self.stations_df, on='station_id', how='inner')
 
-        self.weather_df.to_csv("../../data/output/houston_weather.csv", index=False)
+        self.weather_df.to_csv("../../data/output/houston_weather_joined.csv", index=False)
         # TODO: process data fields into proper types
 
 

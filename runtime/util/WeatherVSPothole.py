@@ -59,6 +59,25 @@ class WeatherVSPotholes():
         precip_df = weather_df[weather_df["reading_type"] == "PRCP"]
         return precip_df
 
+
+    # TODO: are these static
+    def __extract_max_temp_data(self, weather_df):
+        """
+        Private method that extracts only the precipation recordings from the weather stations
+        """
+        tmax_df = weather_df[weather_df["reading_type"] == "TMAX"]
+        return tmax_df
+    
+    
+    # TODO: are these static
+    def __extract_min_temp_data(self, weather_df):
+        """
+        Private method that extracts only the precipation recordings from the weather stations
+        """
+        tmax_df = weather_df[weather_df["reading_type"] == "TMIN"]
+        return tmax_df
+    
+    
     def single_station_explore(self, weather_df, station_id):
         """
         Initial exploration method for a single station
@@ -73,9 +92,8 @@ class WeatherVSPotholes():
         return df
 
     def potholes_near_station(self, potholes_df, weather_df, station_id, radius):
-        # extract the station's latitude and longitude
-        # stations_df = self.create_tx_stations_df(stations_data)
         station = weather_df[weather_df["station_id"] == station_id]
+        print(station)
         station_lat = station["lat"].values[0]
         station_lng = station["lon"].values[0]
         
@@ -122,13 +140,15 @@ class WeatherVSPotholes():
         counts_df.set_index("month-year", inplace=True)
 
         # counts_df.plot(kind="bar", legend=False)
+ 
 
+        # plt.plot_date(x,y,'b-')
         # plt.title("Pothole formation around station " + station_id)
         # plt.xlabel("Time")
         fig, ax = plt.subplots()
         x = counts_df.index
         y = counts_df["SR CREATE DATE"]
-        ax.bar(x, y, width=15)
+        b1 = ax.bar(x, y, width=15, label="Potholes")
         ax.set_title("Pothole formation around station " + station_id)
         ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
         ax.xaxis.set_minor_formatter(mdates.DateFormatter("%b %Y"))
@@ -136,55 +156,24 @@ class WeatherVSPotholes():
         ax.tick_params(axis='x', rotation=45)
         ax.set_xlabel("Date")
         ax.set_ylabel("Number of Pothole")
+        ax.legend(loc=0)
         # plt.ylabel("Number of Pothole")
+    
+        
+        
+        # fig, ax = plt.subplots()
+        ax2 = ax.twinx()
+        station_precip = self.__extract_precip_data(weather_df)
+        station_precip["date"] = pd.to_datetime(station_precip["date"], format='%Y%m%d')
+        x = station_precip.date
+        y = station_precip.value
+        ax2.bar(x, y, width=15, color='g', label="Precipitation")
+        ax2.set_ylabel("Precipitation (tenths of mm)")
+        ax2.legend(loc=0)
+        # ax2.set_title("Precipitation recorded for station " + station_id)
+
         plt.subplots_adjust(bottom=.2)
         plt.show()
-
-        lst = weather_df["station_id"].unique()
-
-        stations_df = stations_df[stations_df["station_id"].isin(lst)]
-        stations_df["latlng"] = list(zip(stations_df.lat, stations_df.lon))
-        stations_df["distance"] = stations_df["latlng"]\
-            .apply(lambda x: self.distance((x[0], x[1]), (29.7604, 95.3698)))
-        print(stations_df[stations_df.distance == min(stations_df.distance)])
-
-
-
-
-
-        # print(len(weather_df["station_id"].unique()))
-        # station_weather = weather_df[weather_df["station_id"]==station_id]
-        # print(station_weather)
-        # d = counts_series.to_dict()
-        # print(pd.DataFrame(d))
-        # copy = pd.DataFrame(data=counts_series.to_dict(), columns=["year", "month", "count"])
-        
-
-        # counts_series.to_csv("../../data/output/test.csv")
-        #
-        # print(counts_series)
-
-        # print(pothole_locations["SR CREATE DATE"].iloc[0])
-        # g = pothole_locations["SR CREATE DATE"].groupby(pd.Grouper(freq="M"))
-        # print(g)
-
-        # # extract latitudes data - clean Nan and Unknown entries - convert to floats
-        # potholes_df["LATITUDE"] = potholes_df["LATITUDE"].dropna()
-        # # potholes_df = potholes_df.dropna()
-        # print(potholes_df["LATITUDE"][potholes_df["LATITUDE"].str.contains("Unknown")])
-        # # latitudes = latitudes[~latitudes.str.contains("Unknown")]
-        # potholes_df["LATITUDE"] = potholes_df["LATITUDE"].apply(lambda x: float(x))
-        # print(potholes_df["LATITUDE"])
-        #
-        # # extract longitude data - clean Nan and Unknown entries - convert to floats
-        # longitudes = potholes_df["LONGITUDE"].dropna()
-        # longitudes = longitudes[~longitudes.str.contains("Unknown")]
-        # longitudes = longitudes.apply(lambda x: float(x))
-        #
-        # potholes_df["coord"] = list(zip(potholes_df.LATITUDE, potholes_df.LONGITUDE))
-        # potholes_df["coord"] = potholes_df["coord"].apply(lambda x: Point(x))
-        # print(potholes_df["coord"])
-        #
 
     def distance(slef, origin, destination):
         lat1, lon1 = origin
@@ -203,11 +192,9 @@ class WeatherVSPotholes():
 
 if __name__ == "__main__":
     
-    weather_data = "../../data/output/houston_weather.csv"
+    weather_data = "../../data/output/houston_weather_joined.csv"
     
     comparer = WeatherVSPotholes()
-    # weather_df = comparer.create_2019_2020_df()
-    # df2 = comparer.single_station_explore(df, "US1TXBEL016")
 
     potholes_csv = {
         2019: "../../data/output/potholePiped2019.csv",
@@ -215,8 +202,9 @@ if __name__ == "__main__":
         2017: "../../data/output/potholePiped2017.csv",
         2222: "../../data/output/potholePiped2015-2019.csv"
     }
-    
+
     potholes_df = pd.read_csv(potholes_csv[2222])
 
     weather_df = comparer.create_2015_2019_df()
-    comparer.potholes_near_station(potholes_df, weather_df, "USC00414310", 0.05)
+    
+    comparer.potholes_near_station(potholes_df, weather_df, "USW00012918", 0.05)
