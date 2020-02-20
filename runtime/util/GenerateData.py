@@ -47,7 +47,7 @@ class GenerateData():
     def create_piped_csv(self, year):
         df_service = self.__create_service_dataframe(pothole_data[year])
         df_pothole = self.__find_pothole_request(df_service)
-        df_pothole.to_csv("../../data/output/potholePiped" + str(year) + ".csv")
+        df_pothole.to_csv("../../data/output/potholePiped" + str(year) + ".csv", index=False)
 
     """
     Public method that exports a csv of concatenated pothole csv's over multiple years
