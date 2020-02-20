@@ -59,7 +59,6 @@ class WeatherVSPotholes():
         precip_df = weather_df[weather_df["reading_type"] == "PRCP"]
         return precip_df
 
-
     # TODO: are these static
     def __extract_max_temp_data(self, weather_df):
         """
@@ -68,15 +67,14 @@ class WeatherVSPotholes():
         tmax_df = weather_df[weather_df["reading_type"] == "TMAX"]
         return tmax_df
     
-    
     # TODO: are these static
+    
     def __extract_min_temp_data(self, weather_df):
         """
         Private method that extracts only the precipation recordings from the weather stations
         """
         tmax_df = weather_df[weather_df["reading_type"] == "TMIN"]
         return tmax_df
-    
     
     def single_station_explore(self, weather_df, station_id):
         """
@@ -87,13 +85,8 @@ class WeatherVSPotholes():
         single["date"] = pd.to_datetime(single["date"], format='%Y%m%d')
         return single
 
-    def create_tx_stations_df(self, filepath):
-        df = pd.read_csv(filepath)
-        return df
-
     def potholes_near_station(self, potholes_df, weather_df, station_id, radius):
         station = weather_df[weather_df["station_id"] == station_id]
-        print(station)
         station_lat = station["lat"].values[0]
         station_lng = station["lon"].values[0]
         
@@ -148,7 +141,7 @@ class WeatherVSPotholes():
         fig, ax = plt.subplots()
         x = counts_df.index
         y = counts_df["SR CREATE DATE"]
-        b1 = ax.bar(x, y, width=15, label="Potholes")
+        ax.bar(x, y, width=15, label="Potholes")
         ax.set_title("Pothole formation around station " + station_id)
         ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
         ax.xaxis.set_minor_formatter(mdates.DateFormatter("%b %Y"))
@@ -159,7 +152,6 @@ class WeatherVSPotholes():
         ax.legend(loc=0)
         # plt.ylabel("Number of Pothole")
     
-        
         
         # fig, ax = plt.subplots()
         ax2 = ax.twinx()
