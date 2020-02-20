@@ -115,7 +115,7 @@ if __name__ == "__main__":
     viz_year = 2222
     potholes_df = pd.read_csv(potholes_csv[viz_year])
     # visualizer.potholes_by_month_single_year_viz(potholes_df, viz_year)
-    # visualizer.overdue_by_month_single_year_viz(potholes_df, viz_year)
-    visualizer.pothole_heat_map(potholes_df, "2015-2019")\
+    visualizer.overdue_by_month_single_year_viz(potholes_df, viz_year)
+    # visualizer.pothole_heat_map(potholes_df, "2015-2019")\
     # visualizer.channel_type_count(potholes_df, "2015-2019")
     # visualizer.single_station_percip()

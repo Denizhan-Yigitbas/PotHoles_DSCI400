@@ -4,14 +4,18 @@ import math
 from shapely.geometry import Point, Polygon
 from datetime import datetime
 import matplotlib.pyplot as plt
-
+import matplotlib.dates as mdates
+import calendar
 import pandas as pd
+import numpy as np
+
+from dataloader import WeatherData
+
 try:
     from StringIO import StringIO
 except ImportError:
     from io import StringIO
 
-weather_data = "../../data/output/all_tx_weather.csv"
 
 class WeatherVSPotholes():
     def __init__(self):
@@ -25,7 +29,8 @@ class WeatherVSPotholes():
         """
         with open(weather_data, 'r') as f:
             q = deque(f, n)  # replace 2 with n (lines read at the end)
-        column_names = ['station_id', 'date', 'reading_type', 'value', 'm_flag', 'q_flag', 's_flag', 'time']
+        column_names = ['station_id', 'date', 'reading_type', 'value', 'm_flag', 'q_flag', 's_flag', 'time',
+                        'lat', 'lon', 'elev', 'state', 'name', 'gsn_flag', 'hcn/crn_flag', 'wmo_id']
         df = pd.read_csv(StringIO(''.join(q)), header=None)
         df.columns = column_names
         return df
@@ -69,8 +74,8 @@ class WeatherVSPotholes():
 
     def potholes_near_station(self, potholes_df, weather_df, station_id, radius):
         # extract the station's latitude and longitude
-        stations_df = self.create_tx_stations_df(stations_data)
-        station = stations_df[stations_df["station_id"] == station_id]
+        # stations_df = self.create_tx_stations_df(stations_data)
+        station = weather_df[weather_df["station_id"] == station_id]
         station_lat = station["lat"].values[0]
         station_lng = station["lon"].values[0]
         
@@ -85,55 +90,63 @@ class WeatherVSPotholes():
         coords = [bot_left, bot_right, top_right, top_left]
         poly = Polygon(coords)
         
-        print(poly.contains(bot_right))
-        # print(poly)
-        # poly.contains(coords[0])
-        #
-        # # clean the potholes lat/lng data
-        # pothole_locations = potholes_df[["SR CREATE DATE", "LATITUDE", "LONGITUDE"]].dropna()
-        # pothole_locations = pothole_locations[~pothole_locations.LATITUDE.str.contains("Unknown")]
-        # pothole_locations["LATITUDE"] = pothole_locations["LATITUDE"].apply(lambda x: float(x))
-        #
-        # pothole_locations = pothole_locations[~pothole_locations.LONGITUDE.str.contains("Unknown")]
-        # pothole_locations["LONGITUDE"] = pothole_locations["LONGITUDE"].apply(lambda x: float(x))
-        #
-        # # combine lat and lng to create Point objects
-        # pothole_locations["coord"] = list(zip(pothole_locations.LATITUDE, pothole_locations.LONGITUDE))
-        # pothole_locations["coord"] =  pothole_locations["coord"].apply(lambda x: Point(x))
-        #
-        # # keep only potholes that are contained within the created Polygon
-        # pothole_locations["contains"] = pothole_locations["coord"].apply(lambda x: poly.contains(x))
-        # pothole_locations = pothole_locations[pothole_locations.contains]
-        #
-        # # convert string dates to datetime
-        # pothole_locations["SR CREATE DATE"] = pothole_locations["SR CREATE DATE"]\
-        #     .apply(lambda x: datetime.strptime(x, '%Y-%m-%d %H:%M:%S'))
-        #
-        # # group the dates by month and year and count the total number of occurences
-        # counts_series = pothole_locations["SR CREATE DATE"] \
-        #     .groupby([(pothole_locations["SR CREATE DATE"].dt.year),(pothole_locations["SR CREATE DATE"].dt.month) ]) \
-        #     .count()
-        #
-        # counts_df = counts_series.to_frame()
-        # counts_df["month-year"] = list(counts_df.index)
-        # counts_df["month-year"] = counts_df["month-year"].apply(lambda x: str(calendar.month_abbr[x[1]]) + " " + str(x[0]))
-        # counts_df.set_index("month-year", inplace=True)
-        #
+        # clean the potholes lat/lng data
+        pothole_locations = potholes_df[["SR CREATE DATE", "LATITUDE", "LONGITUDE"]].dropna()
+        pothole_locations = pothole_locations[~pothole_locations.LATITUDE.str.contains("Unknown")]
+        pothole_locations["LATITUDE"] = pothole_locations["LATITUDE"].apply(lambda x: float(x))
+
+        pothole_locations = pothole_locations[~pothole_locations.LONGITUDE.str.contains("Unknown")]
+        pothole_locations["LONGITUDE"] = pothole_locations["LONGITUDE"].apply(lambda x: float(x))
+
+        # combine lat and lng to create Point objects
+        pothole_locations["coord"] = list(zip(pothole_locations.LATITUDE, pothole_locations.LONGITUDE))
+        pothole_locations["coord"] =  pothole_locations["coord"].apply(lambda x: Point(x))
+
+        # keep only potholes that are contained within the created Polygon
+        pothole_locations["contains"] = pothole_locations["coord"].apply(lambda x: poly.contains(x))
+        pothole_locations = pothole_locations[pothole_locations.contains]
+
+        # convert string dates to datetime
+        pothole_locations["SR CREATE DATE"] = pothole_locations["SR CREATE DATE"]\
+            .apply(lambda x: datetime.strptime(x, '%Y-%m-%d %H:%M:%S'))
+
+        # group the dates by month and year and count the total number of occurences
+        counts_series = pothole_locations["SR CREATE DATE"] \
+            .groupby([(pothole_locations["SR CREATE DATE"].dt.year),(pothole_locations["SR CREATE DATE"].dt.month) ]) \
+            .count()
+
+        counts_df = counts_series.to_frame()
+        counts_df["month-year"] = list(counts_df.index)
+        counts_df["month-year"] = counts_df["month-year"]\
+            .apply(lambda x: datetime.strptime(str(calendar.month_abbr[x[1]]) + " " + str(x[0]), '%b %Y'))
+        counts_df.set_index("month-year", inplace=True)
+
         # counts_df.plot(kind="bar", legend=False)
-        #
+
         # plt.title("Pothole formation around station " + station_id)
         # plt.xlabel("Time")
+        fig, ax = plt.subplots()
+        x = counts_df.index
+        y = counts_df["SR CREATE DATE"]
+        ax.bar(x, y, width=15)
+        ax.set_title("Pothole formation around station " + station_id)
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
+        ax.xaxis.set_minor_formatter(mdates.DateFormatter("%b %Y"))
+        ax.xaxis.set_major_locator(mdates.MonthLocator(interval=4))
+        ax.tick_params(axis='x', rotation=45)
+        ax.set_xlabel("Date")
+        ax.set_ylabel("Number of Pothole")
         # plt.ylabel("Number of Pothole")
-        # plt.subplots_adjust(bottom=.2)
-        # plt.show()
-        #
-        # lst = weather_df["station_id"].unique()
-        #
-        # stations_df = stations_df[stations_df["station_id"].isin(lst)]
-        # stations_df["latlng"] = list(zip(stations_df.lat, stations_df.lon))
-        # stations_df["distance"] = stations_df["latlng"]\
-        #     .apply(lambda x: self.distance(x[0], x[1], 29.7604, 95.3698))
-        # print(stations_df[stations_df.distance == min(stations_df.distance)])
+        plt.subplots_adjust(bottom=.2)
+        plt.show()
+
+        lst = weather_df["station_id"].unique()
+
+        stations_df = stations_df[stations_df["station_id"].isin(lst)]
+        stations_df["latlng"] = list(zip(stations_df.lat, stations_df.lon))
+        stations_df["distance"] = stations_df["latlng"]\
+            .apply(lambda x: self.distance((x[0], x[1]), (29.7604, 95.3698)))
+        print(stations_df[stations_df.distance == min(stations_df.distance)])
 
 
 
@@ -190,9 +203,7 @@ class WeatherVSPotholes():
 
 if __name__ == "__main__":
     
-    weather_data = "../../data/output/all_tx_weather.csv"
-    stations_data = "../../data/output/all_tx_stations.csv"
-
+    weather_data = "../../data/output/houston_weather.csv"
     
     comparer = WeatherVSPotholes()
     # weather_df = comparer.create_2019_2020_df()
