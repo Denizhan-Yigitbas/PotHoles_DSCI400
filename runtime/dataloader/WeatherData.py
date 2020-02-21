@@ -2,6 +2,7 @@
 import pandas as pd
 import os
 from datetime import datetime
+import calendar
 
 
 class WeatherData(object):
@@ -60,8 +61,22 @@ class WeatherData(object):
             self.weather_df.reading_type == 'PRCP'
         ]
 
-    
+    def all_precipitation_in_range(self, year1, year2):
+        df= self.all_weather_in_range(year1, year2)
+        return df.loc[
+            df.reading_type == 'PRCP'
+        ]
+        
+    def avg_precipitation_per_month(self, year1, year2):
+        prcp_df = self.all_precipitation_in_range(year1, year2)
+        prcp_df.set_index("date", inplace=True)
+        prcp_df = prcp_df.resample('M').mean()
+
+        prcp_df["date"] = list(prcp_df.index)
+        prcp_df["month-year"] = prcp_df["date"] \
+            .apply(lambda x: x.strftime('%b %Y'))
+        return prcp_df["value"]
 
 
 if __name__ == "__main__":
-    WeatherData()
+    WeatherData().avg_precipitation_per_month(2015, 2019)
