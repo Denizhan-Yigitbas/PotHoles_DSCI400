@@ -64,6 +64,11 @@ class WeatherData(object):
             self.weather_df.reading_type == 'PRCP'
         ]
 
+    def avg_temp_df(self):
+        temp_df = self.temp_df
+        print(temp_df.groupby(temp_df['date'].dt.date))
+        
+        
     def avg_precipitation_per_month(self, year1, year2):
         prcp_df = self.all_weather_in_range(year1, year2, df=self.precipitation_df)
         prcp_df.set_index("date", inplace=True)
@@ -76,4 +81,5 @@ class WeatherData(object):
 
 
 if __name__ == "__main__":
-    WeatherData().avg_precipitation_per_month(2015, 2019)
+    x = WeatherData().avg_temp_df
+    

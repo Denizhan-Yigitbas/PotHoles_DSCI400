@@ -23,7 +23,7 @@ class WeatherVSPotholes():
         self.potholeDat = PotholeData()
 
     # TODO: remove inputes by replaceing with variables form init?
-    def potholes_near_station(self, year1, year2, station_id, radius):
+    def precip_vs_potholes_near_station(self, year1, year2, station_id, radius):
         # create the desired DataFrames
         weather_df = weatherDat.all_weather_in_range(year1, year2)
         potholes_df = potholeDat.all_potholes_in_year_list(range(year1, year2+1, 1))
@@ -88,7 +88,7 @@ class WeatherVSPotholes():
         plt.subplots_adjust(bottom=.2, left=0.11, right= 0.87)
         plt.show()
 
-
+    
 if __name__ == "__main__":
     
     weatherDat = WeatherData()
@@ -97,4 +97,4 @@ if __name__ == "__main__":
     comparer = WeatherVSPotholes()
 
     
-    comparer.potholes_near_station(2015, 2019, "USW00012918", 0.05)
+    comparer.precip_vs_potholes_near_station(2015, 2019, "USW00012918", 0.05)
