@@ -66,8 +66,7 @@ class WeatherData(object):
 
     def avg_temp_df(self):
         temp_df = self.temp_df
-        print(temp_df.groupby(temp_df['date'].dt.date))
-        
+        return temp_df.groupby(['station_id', 'date']).value.agg('mean')
         
     def avg_precipitation_per_month(self, year1, year2):
         prcp_df = self.all_weather_in_range(year1, year2, df=self.precipitation_df)
