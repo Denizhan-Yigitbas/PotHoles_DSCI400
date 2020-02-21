@@ -19,11 +19,16 @@ except ImportError:
 
 class WeatherVSPotholes():
     def __init__(self):
-        # TODO: Declare classes up here?
-        pass
+        self.weatherDat = WeatherData()
+        self.potholeDat = PotholeData()
 
     # TODO: remove inputes by replaceing with variables form init?
-    def potholes_near_station(self, potholes_df, weather_df, station_id, radius):
+    def potholes_near_station(self, year1, year2, station_id, radius):
+        # create the desired DataFrames
+        weather_df = weatherDat.all_weather_in_range(year1, year2)
+        potholes_df = potholeDat.all_potholes_in_year_list(range(year1, year2+1, 1))
+        
+        # locate the input station coordinates
         station = weather_df[weather_df["station_id"] == station_id]
         station_lat = station["lat"].values[0]
         station_lng = station["lon"].values[0]
@@ -57,6 +62,7 @@ class WeatherVSPotholes():
             .apply(lambda x: datetime.strptime(str(calendar.month_abbr[x[1]]) + " " + str(x[0]), '%b %Y'))
         counts_df.set_index("month-year", inplace=True)
  
+        # visualize the data
         fig, ax = plt.subplots()
         x = counts_df.index
         y = counts_df["SR CREATE DATE"]
@@ -91,7 +97,4 @@ if __name__ == "__main__":
     comparer = WeatherVSPotholes()
 
     
-    weather_df = weatherDat.all_weather_in_range(2015, 2019)
-    potholes_df = potholeDat.all_potholes_in_year_list([2015, 2016, 2017, 2018, 2019])
-    
-    comparer.potholes_near_station(potholes_df, weather_df, "USW00012918", 0.05)
+    comparer.potholes_near_station(2015, 2019, "USW00012918", 0.05)
