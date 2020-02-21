@@ -36,11 +36,14 @@ class WeatherData(object):
             index=False
         )
 
-    def all_weather_in_range(self, year1, year2):
+    def all_weather_in_range(self, year1, year2, df=None):
 
-        return self.weather_df.loc[
-            (self.weather_df.date >= datetime(day=1, month=1, year=year1)) &
-            (self.weather_df.date < datetime(day=1, month=1, year=year2 + 1))
+        if df is None:
+            df = self.weather_df
+
+        return df.loc[
+            (df.date >= datetime(day=1, month=1, year=year1)) &
+            (df.date < datetime(day=1, month=1, year=year2 + 1))
         ]
 
     @property
@@ -61,14 +64,8 @@ class WeatherData(object):
             self.weather_df.reading_type == 'PRCP'
         ]
 
-    def all_precipitation_in_range(self, year1, year2):
-        df= self.all_weather_in_range(year1, year2)
-        return df.loc[
-            df.reading_type == 'PRCP'
-        ]
-        
     def avg_precipitation_per_month(self, year1, year2):
-        prcp_df = self.all_precipitation_in_range(year1, year2)
+        prcp_df = self.all_weather_in_range(year1, year2, df=self.precipitation_df)
         prcp_df.set_index("date", inplace=True)
         prcp_df = prcp_df.resample('M').mean()
 
