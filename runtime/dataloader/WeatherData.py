@@ -68,17 +68,31 @@ class WeatherData(object):
         temp_df = self.temp_df
         return temp_df.groupby(['station_id', 'date']).value.agg('mean')
         
-    def avg_precipitation_per_month(self, year1, year2):
+    def avg_station_precipitation_per_month(self, year1, year2, station_id):
+        # get all the precipiation data
         prcp_df = self.all_weather_in_range(year1, year2, df=self.precipitation_df)
+        
+        # change the index
         prcp_df.set_index("date", inplace=True)
+        
+        # filter out only precipitation data for the specific station
+        prcp_df = prcp_df[prcp_df["station_id"] == station_id]
+        
+        # group by average percipitation per month
         prcp_df = prcp_df.resample('M').mean()
-
+        
+        # structure the df for export
         prcp_df["date"] = list(prcp_df.index)
         prcp_df["month-year"] = prcp_df["date"] \
             .apply(lambda x: x.strftime('%b %Y'))
+        prcp_df.set_index('month-year', inplace=True)
+        
         return prcp_df["value"]
 
 
 if __name__ == "__main__":
-    x = WeatherData().avg_temp_df
+    x = WeatherData().avg_temp_df()
+    y = WeatherData().avg_station_precipitation_per_month(2015, 2019, "USW00012918")
+    # print(x)
+    # print(y)
     

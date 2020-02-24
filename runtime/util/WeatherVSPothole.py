@@ -60,24 +60,27 @@ class WeatherVSPotholes():
         counts_df["month-year"] = list(counts_df.index)
         counts_df["month-year"] = counts_df["month-year"]\
             .apply(lambda x: datetime.strptime(str(calendar.month_abbr[x[1]]) + " " + str(x[0]), '%b %Y'))
+        counts_df["month-year"] = counts_df["month-year"] \
+            .apply(lambda x: x.strftime('%b %Y'))
         counts_df.set_index("month-year", inplace=True)
- 
+        
         # visualize the data
         fig, ax = plt.subplots()
         x = counts_df.index
         y = counts_df["SR CREATE DATE"]
-        ax.bar(x, y, width=20, label="Potholes")
+        ax.bar(x, y, width=0.7, label="Potholes")
         ax.set_title("Pothole formation around station " + station_id)
         ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
         ax.xaxis.set_minor_formatter(mdates.DateFormatter("%b %Y"))
-        ax.xaxis.set_major_locator(mdates.MonthLocator(interval=4))
+        ax.xaxis.set_major_locator(mdates.MonthLocator(interval=6))
         ax.tick_params(axis='x', rotation=45)
         ax.set_xlabel("Date")
         ax.set_ylabel("Number of Pothole")
         ax.legend(loc="upper left")
     
         ax2 = ax.twinx()
-        station_precip = WeatherData().avg_precipitation_per_month(2015, 2019)
+        station_precip = WeatherData().avg_station_precipitation_per_month(2015, 2019, station_id)
+        print(station_precip)
         x = station_precip.index
         y = station_precip
         print(y)
