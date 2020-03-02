@@ -21,15 +21,12 @@ class PotholeData(object):
         """
         Loads weather dataframe and merge in the station data for each reading.
         """
-        self.data2015 = pd.read_csv(PotholeData.data_path + "potholePiped2015.csv")
-        self.data2016 = pd.read_csv(PotholeData.data_path + "potholePiped2016.csv")
-        self.data2017 = pd.read_csv(PotholeData.data_path + "potholePiped2017.csv")
-        self.data2018 = pd.read_csv(PotholeData.data_path + "potholePiped2018.csv")
-        self.data2019 = pd.read_csv(PotholeData.data_path + "potholePiped2019.csv")
+        self.potholes_dictionary = {
+            year: pd.read_csv(PotholeData.data_path + f"potholePiped{year}.csv")
+            for year in range(2015, 2020)
+        }
 
-        pothole_df_list = [self.data2015, self.data2016, self.data2017, self.data2018, self.data2019]
-
-        self.pothole_df = pd.concat(pothole_df_list)
+        self.pothole_df = pd.concat(list(self.potholes_dictionary.values()))
         
         self.pothole_df = self.clean_correct_pothole_data(self.pothole_df)
     
@@ -61,18 +58,11 @@ class PotholeData(object):
         :param years_list: list of years in the form yyyy (i.e. 2019)
         :return: DataFrame containing only desired years
         """
-        potholes_dictionary = {
-            2015: self.data2015,
-            2016: self.data2016,
-            2017: self.data2017,
-            2018: self.data2018,
-            2019: self.data2019
-        }
         
         # extract the desired years from the dictionary and concatenate them
         selected_pothole_df_list = []
         for year in years_list:
-            selected_pothole_df_list.append(potholes_dictionary[year])
+            selected_pothole_df_list.append(self.potholes_dictionary[year])
         new_pothole_df = pd.concat(selected_pothole_df_list)
         
         return self.clean_correct_pothole_data(new_pothole_df)
