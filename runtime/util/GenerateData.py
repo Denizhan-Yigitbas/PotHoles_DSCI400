@@ -128,7 +128,7 @@ class GenerateData():
 if __name__ == "__main__":
     piper = GenerateData()
     # year = 2019
-    for year in list(range(2015, 2019)):
+    for year in list(range(2015, 2020)):
         piper.create_piped_csv(year)
 
     piper.concat_multi_year_potholes(2015, 2019)
