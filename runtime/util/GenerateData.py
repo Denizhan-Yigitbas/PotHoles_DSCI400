@@ -6,6 +6,7 @@ pothole_data = {
     2017: "../../data/raw/311-Public-Data-Extract-2017-clean.txt",
     2016: "../../data/raw/311-Public-Data-Extract-2016-clean.txt",
     2015: "../../data/raw/311-Public-Data-Extract-2015-clean.txt",
+    # 3000 "../../data/raw/311-Public-Data-Extract-Harvey-clean.txt",
 }
 
 
@@ -41,6 +42,19 @@ class GenerateData():
         df_pothole.reset_index()
         return df_pothole
 
+    def __find_flooding_request(self, df_service):
+        idx = df_service.columns.get_loc('SR TYPE')
+        not_flood = []
+        # Find the row index of all service requests unrelated to flooding and compile into list
+        for i in range(len(df_service)):
+            if df_service.iloc[i, idx] != 'Flooding':
+                not_flood.append(i)
+        # Remove all indexed rows from DataFrame
+        df_flooding = df_service.drop(not_flood)
+        # Reset index of DataFrame
+        df_flooding.reset_index()
+        return df_flooding
+
     def __interpolate_stations(self, df_potholes, df_stations):
         for index, row in df_potholes.iterrows():
             print(index)
@@ -67,7 +81,9 @@ class GenerateData():
     def create_piped_csv(self, year):
         df_service = self.__create_service_dataframe(pothole_data[year])
         df_pothole = self.__find_pothole_request(df_service)
+        df_flooding = self.__find_flooding_request(df_service)
         df_pothole.to_csv("../../data/output/potholePiped" + str(year) + ".csv", index=False)
+        df_flooding.to_csv("../../data/output/floodingPiped" + str(year) + ".csv", index=False)
 
     """
     Public method that exports a csv of concatenated pothole csv's over multiple years
@@ -111,6 +127,8 @@ class GenerateData():
     
 if __name__ == "__main__":
     piper = GenerateData()
-    year = 2019
-    # piper.create_piped_csv(year)
+    # year = 2019
+    for year in list(range(2015, 2019)):
+        piper.create_piped_csv(year)
+
     piper.concat_multi_year_potholes(2015, 2019)
