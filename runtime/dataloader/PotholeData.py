@@ -61,7 +61,7 @@ class PotholeData(object):
         :param years_list: list of years in the form yyyy (i.e. 2019)
         :return: DataFrame containing only desired years
         """
-        potholes_dictioary = {
+        potholes_dictionary = {
             2015: self.data2015,
             2016: self.data2016,
             2017: self.data2017,
@@ -72,7 +72,7 @@ class PotholeData(object):
         # extract the desired years from the dictionary and concatenate them
         selected_pothole_df_list = []
         for year in years_list:
-            selected_pothole_df_list.append(potholes_dictioary[year])
+            selected_pothole_df_list.append(potholes_dictionary[year])
         new_pothole_df = pd.concat(selected_pothole_df_list)
         
         return self.clean_correct_pothole_data(new_pothole_df)
