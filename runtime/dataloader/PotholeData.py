@@ -32,7 +32,6 @@ class PotholeData(object):
         self.pothole_df = pd.concat(pothole_df_list)
         
         self.pothole_df = self.clean_correct_pothole_data(self.pothole_df)
-
     
     def clean_correct_pothole_data(self, pothole_df):
         """
@@ -78,13 +77,14 @@ class PotholeData(object):
         
         return self.clean_correct_pothole_data(new_pothole_df)
 
-    def potholes_by_month_single_year(self, potholes_df):
+    def potholes_by_month_single_year(self, year):
         # convert the the dates into datetime objects
-        potholes_df["SR CREATE DATE"] = pd.to_datetime(potholes_df["SR CREATE DATE"])
+        # potholes_df["SR CREATE DATE"] = pd.to_datetime(potholes_df["SR CREATE DATE"])
     
+        pothole_df = self.all_potholes_in_year_list([year])
         # group the dates by month and count the total number of occurences
-        counts_series = potholes_df["SR CREATE DATE"] \
-            .groupby([potholes_df["SR CREATE DATE"].dt.month]) \
+        counts_series = pothole_df["SR CREATE DATE"] \
+            .groupby([pothole_df["SR CREATE DATE"].dt.month]) \
             .count()
     
         # change the month numbers to names
@@ -96,10 +96,10 @@ class PotholeData(object):
     
         return counts_df
 
-    def overdue_by_month_single_year(self, potholes_df):
+    def overdue_by_month_single_year(self, year):
         # calculate the average number of overdue days for every month of the year
-        potholes_df["SR CREATE DATE"] = pd.to_datetime(potholes_df["SR CREATE DATE"])
-        avg_overdue = potholes_df["OVERDUE"].groupby([potholes_df["SR CREATE DATE"].dt.month])
+        pothole_df = self.all_potholes_in_year_list([year])
+        avg_overdue = pothole_df["OVERDUE"].groupby([pothole_df["SR CREATE DATE"].dt.month])
         avg_overdue_series = avg_overdue.mean()
     
         # change the month numbers to names
@@ -111,12 +111,12 @@ class PotholeData(object):
     
         return avg_overdue_df
 
-    def channel_type_count(self, potholes_df):
+    def channel_type_count(self):
         # count the number of occurences for each Channel Type
-        channel_count_df = potholes_df["Channel Type"].groupby(potholes_df["Channel Type"]).count()
+        channel_count_df = self.pothole_df["Channel Type"].groupby(self.pothole_df["Channel Type"]).count()
     
         return channel_count_df
     
     
 if __name__ == "__main__":
-    print(PotholeData().potholes_by_month_single_year(PotholeData().pothole_df))
+    pass
