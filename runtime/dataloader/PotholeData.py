@@ -68,6 +68,11 @@ class PotholeData(object):
         return self.clean_correct_pothole_data(new_pothole_df)
 
     def potholes_by_month_single_year(self, year):
+        """
+        Month -> number of potholes dataframe
+        :param year: year to calculate
+        :return:
+        """
         # convert the the dates into datetime objects
         # potholes_df["SR CREATE DATE"] = pd.to_datetime(potholes_df["SR CREATE DATE"])
     
@@ -87,6 +92,11 @@ class PotholeData(object):
         return counts_df
 
     def overdue_by_month_single_year(self, year):
+        """
+        Month -> Average overdue time
+        :param year: year to calculate
+        :return: DataFrame
+        """
         # calculate the average number of overdue days for every month of the year
         pothole_df = self.all_potholes_in_year_list([year])
         avg_overdue = pothole_df["OVERDUE"].groupby([pothole_df["SR CREATE DATE"].dt.month])
@@ -102,6 +112,10 @@ class PotholeData(object):
         return avg_overdue_df
 
     def channel_type_count(self):
+        """
+        DataFrame that counts channel type
+        :return:
+        """
         # count the number of occurences for each Channel Type
         channel_count_df = self.pothole_df["Channel Type"].groupby(self.pothole_df["Channel Type"]).count()
     
