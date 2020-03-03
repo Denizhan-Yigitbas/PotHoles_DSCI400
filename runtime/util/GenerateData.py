@@ -42,6 +42,8 @@ class GenerateData():
         df_pothole.reset_index()
         return df_pothole
 
+<<<<<<< HEAD
+=======
     def __find_flooding_request(self, df_service):
         idx = df_service.columns.get_loc('SR TYPE')
         not_flood = []
@@ -55,26 +57,6 @@ class GenerateData():
         df_flooding.reset_index()
         return df_flooding
 
-    def __interpolate_stations(self, df_potholes, df_stations):
-        for index, row in df_potholes.iterrows():
-            print(index)
-            stations = []
-            for ind, r in df_stations.iterrows():
-                dist = ( (r['lat'] - row['LATITUDE']) ** 2 + (r['lon'] - row['LONGITUDE']) ** 2 ) ** .5
-                stations.append( (df_stations.at[ind, 'station_id'] , dist) )
-            stations.sort(key = lambda x: x[1])
-            stations = stations[:3]
-
-            tot = sum(i[1] for i in stations)
-
-            df_potholes.at[index, 'Station1'] = stations[0][0]
-            df_potholes.at[index, 'Station2'] = stations[1][0]
-            df_potholes.at[index, 'Station3'] = stations[2][0]
-
-            df_potholes.at[index, 'inter1'] = stations[0][1] / tot
-            df_potholes.at[index, 'inter2'] = stations[1][1] / tot
-            df_potholes.at[index, 'inter3'] = stations[2][1] / tot
-        return df_potholes
     """
     Public method that exports a csv of the pothole data into data/outputs/ directory
     """
@@ -97,32 +79,6 @@ class GenerateData():
         df_final = pd.concat(df_list)
         df_final.to_csv("../../data/output/potholePiped" + str(start_year) + "-" + str(end_year) + ".csv", index=False)
 
-    def nearest_stations(self, all_years = True):
-        if all_years:
-            df = pd.read_csv("../../data/output/potholePiped2019.csv")
-            pot_df = df[['SR CREATE DATE', 'LATITUDE', 'LONGITUDE']]
-
-            pot_df = pot_df[pot_df['LATITUDE'].notna()]
-            pot_df = pot_df.loc[pot_df['LATITUDE'] != 'Unknown']
-
-            pot_df['LATITUDE'] = pd.to_numeric(pot_df['LATITUDE'])
-            pot_df['LONGITUDE'] = pd.to_numeric(pot_df['LONGITUDE'])
-
-            pot_df = pot_df.reindex(columns = ['SR CREATE DATE', 'LATITUDE', 'LONGITUDE', 'Station1', 'Station2', 'Station3', 'inter1', 'inter2', 'inter3'])
-
-            pot_df['Station1'] = pot_df['Station1'].astype(str)
-            pot_df['Station2'] = pot_df['Station2'].astype(str)
-            pot_df['Station3'] = pot_df['Station3'].astype(str)
-
-            stations_df = pd.read_csv("../../data/output/all_tx_stations.csv")
-            stations_df = stations_df[['station_id', 'lat', 'lon']]
-
-            stations_df['lat'] = pd.to_numeric(stations_df['lat'])
-            stations_df['lon'] = pd.to_numeric(stations_df['lon'])
-
-            final_df = self.__interpolate_stations(pot_df, stations_df)
-
-            final_df.to_csv("../../data/output/interpolations2019.csv")
             
     
 if __name__ == "__main__":
