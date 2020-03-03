@@ -1,20 +1,30 @@
 # PotHoles_DSCI400
 
-<b> Note: </b> Currently the piped pothole files must be stored under the <i> PotHoles_DSCI400/data/output </i> directory
+## Project Description
+Put Description Here
+
+## Current Project Status
+Put Status Here
+
+## Installing
+How to install here
 
 ## Usage
+### Data Gathering
 
-run `python run_this.py` to get a list of executable commands
+Fill in here
 
-run `python run_this.py [function] -- --help` to get details about that functions usage
+### Data Visualization
 
-## Visualizations
+run `python runtime/util/DataViz` to see visualizations on:
 
-#### To visualize the amount of potholes reported monthly in a given year:
+1. A pothole count vs time bar graph for a specific year
+2. The average overdue time to repair a pothole vs time for a given year
+3. A count vs channel type bar graph for potholes where channel Type is the method of
+ reporting a potholes i.e. Web, Phone, etc.
 
-run `python run_this.py potholes_by_month [piped pothole csv data file name] [year]`
+run `python runtime/util/WeatherVSPothole` to see visualization on:
 
-
-#### To visualize the precipitation reports for a single weather station:
-
-run `python run_this.py single_station_yearly_precipitation()`
+- The recorded temperature and precipitation recorded at a specific weather station and the
+number of potholes that formed around this weather station (within a specified radius) during 
+this time
