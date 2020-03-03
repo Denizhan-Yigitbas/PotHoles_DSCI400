@@ -46,6 +46,10 @@ class WeatherData(object):
             (df.date < datetime(day=1, month=1, year=year2 + 1))
         ]
 
+    def station_df(self, stat_id):
+        stat_df = self.weather_df.loc[self.weather_df.reading_type.isin(['TMAX', 'TMIN','PRCP'])]
+        return stat_df.loc[stat_df.station_id == stat_id]
+
     @property
     def temp_df(self):
         """

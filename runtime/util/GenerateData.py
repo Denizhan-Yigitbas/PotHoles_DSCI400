@@ -42,8 +42,6 @@ class GenerateData():
         df_pothole.reset_index()
         return df_pothole
 
-<<<<<<< HEAD
-=======
     def __find_flooding_request(self, df_service):
         idx = df_service.columns.get_loc('SR TYPE')
         not_flood = []
