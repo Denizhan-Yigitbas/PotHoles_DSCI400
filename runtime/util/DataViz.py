@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import gmplot
 
-from PotHoles_DSCI400.runtime.dataloader import PotholeData, FloodingData
+from runtime.dataloader import PotholeData, FloodingData
 
 class DataViz():
     def __init__(self):
@@ -115,8 +115,7 @@ if __name__ == "__main__":
     visualizer = DataViz()
     viz_year = 2019
     
-    # visualizer.potholes_by_month_single_year_viz(viz_year)
-    # visualizer.overdue_by_month_single_year_viz(viz_year)
-    visualizer.pothole_heat_map(2019, all_years=True)
-    visualizer.flooding_heat_map(2019, all_years=True)
-    # visualizer.channel_type_count()
+    visualizer.potholes_by_month_single_year_viz(viz_year)
+    visualizer.overdue_by_month_single_year_viz(viz_year)
+    # visualizer.pothole_heat_map(2019, all_years=True)
+    visualizer.channel_type_count()
