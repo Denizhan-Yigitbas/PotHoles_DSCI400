@@ -31,13 +31,23 @@ class WeatherData(object):
         self.weather_df.date = pd.to_datetime(self.weather_df.date, format="%Y%m%d")
 
     def weather_joined_to_csv(self):
+        """
+        Export the weather dataframe to the data/output directory with name houston_weather_joined.csv
+        :return:
+        """
         self.weather_df.to_csv(
             os.path.join(WeatherData.root_path, "../../data/output/houston_weather_joined.csv"),
             index=False
         )
 
     def all_weather_in_range(self, year1, year2, df=None):
-
+        """
+        Extracts data between 2 years
+        :param year1: start year
+        :param year2: end year
+        :param df: if a df is given, that specific dataframe will be filtered
+        :return:
+        """
         if df is None:
             df = self.weather_df
 
@@ -65,10 +75,21 @@ class WeatherData(object):
         ]
 
     def avg_daily_temp_df(self):
+        """
+        Calculate the average daily temperature
+        :return:
+        """
         temp_df = self.temp_df
         return temp_df.groupby(['station_id', 'date']).value.agg('mean')
         
     def avg_station_precipitation_per_month(self, year1, year2, station_id):
+        """
+        Average precipitation per month recorded at a specific weather station between 2 years
+        :param year1: start year
+        :param year2: end year
+        :param station_id: weather station id
+        :return: Pandas Series indexed on month-year
+        """
         # get all the precipiation data
         prcp_df = self.all_weather_in_range(year1, year2, df=self.precipitation_df)
         
@@ -90,6 +111,13 @@ class WeatherData(object):
         return prcp_df["value"]
 
     def avg_station_temp_per_month(self, year1, year2, station_id):
+        """
+        Average temperature per month recorded at a specific weather station between 2 years
+        :param year1: start year
+        :param year2: end year
+        :param station_id: weather station id
+        :return: Pandas Series indexed on month-year
+        """
         # get all the precipiation data
         avg_temp_df = self.avg_daily_temp_df()
         avg_temp_df= avg_temp_df.to_frame()
