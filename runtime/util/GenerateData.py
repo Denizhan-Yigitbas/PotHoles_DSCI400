@@ -10,7 +10,7 @@ pothole_data = {
 }
 
 flooding_hfd = {
-    "../../data/raw/HFD Flooding Locations Data File.csv",
+    'all': "../../data/raw/HFD Flooding Locations Data File.csv",
 }
 
 
@@ -70,6 +70,15 @@ class GenerateData():
         df_flooding.to_csv("../../data/output/floodingPiped" + str(year) + ".csv", index=False)
 
     """
+    Public method that exports a csv of HFD data without columns that contain only "NA"
+    """
+    def create_hfd_flooding_csv(self):
+        df_hfd_flooding = pd.read_csv(flooding_hfd['all'])
+        na_cols = ['X', 'X.1', 'X.2', 'X.3']
+        df_hfd_flooding.drop(na_cols, axis=1, inplace=True)
+        df_hfd_flooding.to_csv("../../data/output/hfd_flooding.csv", index=False)
+
+    """
     Public method that exports a csv of concatenated pothole csv's over multiple years
     """
     def concat_multi_year_potholes(self, start_year, end_year):
@@ -86,7 +95,8 @@ class GenerateData():
 if __name__ == "__main__":
     piper = GenerateData()
     # year = 2019
-    for year in list(range(2015, 2020)):
-        piper.create_piped_csv(year)
+    # for year in list(range(2015, 2020)):
+        # piper.create_piped_csv(year)
 
-    piper.concat_multi_year_potholes(2015, 2019)
+    # piper.concat_multi_year_potholes(2015, 2019)
+    piper.create_hfd_flooding_csv()
