@@ -19,7 +19,8 @@ We are currently in the exploration stage of the data science pipeline for the p
 For flooding data, we recently received access to data from Rice's UrbanInstitute so we are in wrangling and exploration.
 
 ## Installing
-How to install here
+run `python setup.py develop` <br><br>
+run `pip install -r requirements.txt`
 
 ## Usage
 ### Data Gathering
@@ -35,7 +36,7 @@ run python runtime/util/DataViz to see visualizations on:
 3. A count vs channel type bar graph for potholes where channel Type is the method of
  reporting a potholes i.e. Web, Phone, etc.
 
-run python runtime/util/WeatherVSPothole to see visualization on:
+NOT FUNCTIONING: run python runtime/util/WeatherVSPothole to see visualization on:
 
 - The recorded temperature and precipitation recorded at a specific weather station and the
 number of potholes that formed around this weather station (within a specified radius) during 
