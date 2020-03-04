@@ -7,7 +7,9 @@ To do so, we analyze the following datasets:
 pothole service requests from the City of Houston, from http://www.houstontx.gov/311/  <br />
 weather data from the National Weather Service from https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/ <br />
 flooding service requests from the City of Houston, from http://www.houstontx.gov/311/<br />
+flooding reports from Houston Fire Department, collected by Dr. Steven Perry <br />
 Pavement Condition Index data from the City of Houston, via communication with the Director of Innovation, Jesse Bounds <br />
+
 
 From this data, we explore potential correlations and generate a table with all relevant information.
 
