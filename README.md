@@ -4,13 +4,10 @@
 Objective is to develop a model to predict pothole formation.
 To do so, we analyze the following datasets:
 
-pothole service requests from the City of Houston, from http://www.houstontx.gov/311/
-
-weather data from the National Weather Service from https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/
-
-flooding service requests from the City of Houston, from http://www.houstontx.gov/311/
-
-Pavement Condition Index data from the City of Houston, via communication with the Director of Innovation, Jesse Bounds
+pothole service requests from the City of Houston, from http://www.houstontx.gov/311/  <br />
+weather data from the National Weather Service from https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/ <br />
+flooding service requests from the City of Houston, from http://www.houstontx.gov/311/<br />
+Pavement Condition Index data from the City of Houston, via communication with the Director of Innovation, Jesse Bounds <br />
 
 From this data, we explore potential correlations and generate a table with all relevant information.
 
