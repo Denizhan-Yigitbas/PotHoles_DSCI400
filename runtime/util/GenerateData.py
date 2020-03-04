@@ -6,7 +6,11 @@ pothole_data = {
     2017: "../../data/raw/311-Public-Data-Extract-2017-clean.txt",
     2016: "../../data/raw/311-Public-Data-Extract-2016-clean.txt",
     2015: "../../data/raw/311-Public-Data-Extract-2015-clean.txt",
-    # 3000 "../../data/raw/311-Public-Data-Extract-Harvey-clean.txt",
+    'Harvey': "../../data/raw/311-Public-Data-Extract-Harvey-clean.txt",
+}
+
+flooding_hfd = {
+    "../../data/raw/HFD Flooding Locations Data File.csv",
 }
 
 

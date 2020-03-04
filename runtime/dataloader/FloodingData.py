@@ -27,33 +27,36 @@ class FloodingData(object):
         self.data2017 = pd.read_csv(FloodingData.data_path + "floodingPiped2017.csv")
         self.data2018 = pd.read_csv(FloodingData.data_path + "floodingPiped2018.csv")
         self.data2019 = pd.read_csv(FloodingData.data_path + "floodingPiped2019.csv")
+        self.flooding_hfd_df = pd.read_csv(FloodingData.data_path + "floodingPiped2019.csv")
 
-        flooding_df_list = [self.data2015, self.data2016, self.data2017, self.data2018, self.data2019]
+        flooding_sr_df_list = [self.data2015, self.data2016, self.data2017, self.data2018, self.data2019]
 
-        self.flooding_df = pd.concat(flooding_df_list)
+        self.flooding_sr_df = pd.concat(flooding_sr_df_list)
 
-        self.flooding_df = self.clean_correct_flooding_data(self.flooding_df)
+        self.flooding_sr_df = self.clean_correct_flooding_sr_data(self.flooding_sr_df)
 
-    def clean_correct_flooding_data(self, flooding_df):
+
+
+    def clean_correct_flooding_sr_data(self, flooding_sr_df):
         """
         Clean original flooding df to have usable objects
-        :param flooding_df:
+        :param flooding_sr_df:
         :return: cleaned DataFrame
         """
         # convert create dates to date times
-        flooding_df["SR CREATE DATE"] = flooding_df["SR CREATE DATE"] \
+        flooding_sr_df["SR CREATE DATE"] = flooding_sr_df["SR CREATE DATE"] \
             .apply(lambda x: datetime.strptime(x, '%Y-%m-%d %H:%M:%S'))
 
         # clean lat/lng
-        flooding_df = flooding_df[flooding_df['LATITUDE'].notna()]
-        flooding_df = flooding_df[~flooding_df.LATITUDE.str.contains("Unknown")]
-        flooding_df["LATITUDE"] = flooding_df["LATITUDE"].apply(lambda x: float(x))
+        flooding_sr_df = flooding_sr_df[flooding_sr_df['LATITUDE'].notna()]
+        flooding_sr_df = flooding_sr_df[~flooding_sr_df.LATITUDE.str.contains("Unknown")]
+        flooding_sr_df["LATITUDE"] = flooding_sr_df["LATITUDE"].apply(lambda x: float(x))
 
-        flooding_df = flooding_df[flooding_df['LONGITUDE'].notna()]
-        flooding_df = flooding_df[~flooding_df.LONGITUDE.str.contains("Unknown")]
-        flooding_df["LONGITUDE"] = flooding_df["LONGITUDE"].apply(lambda x: float(x))
+        flooding_sr_df = flooding_sr_df[flooding_sr_df['LONGITUDE'].notna()]
+        flooding_sr_df = flooding_sr_df[~flooding_sr_df.LONGITUDE.str.contains("Unknown")]
+        flooding_sr_df["LONGITUDE"] = flooding_sr_df["LONGITUDE"].apply(lambda x: float(x))
 
-        return flooding_df
+        return flooding_sr_df
 
     def all_floodings_in_year_list(self, years_list):
         """
@@ -71,21 +74,21 @@ class FloodingData(object):
         }
 
         # extract the desired years from the dictionary and concatenate them
-        selected_flooding_df_list = []
+        selected_flooding_sr_df_list = []
         for year in years_list:
-            selected_flooding_df_list.append(floodings_dictionary[year])
-        new_flooding_df = pd.concat(selected_flooding_df_list)
+            selected_flooding_sr_df_list.append(floodings_dictionary[year])
+        new_flooding_sr_df = pd.concat(selected_flooding_sr_df_list)
 
-        return self.clean_correct_flooding_data(new_flooding_df)
+        return self.clean_correct_flooding_sr_data(new_flooding_sr_df)
 
     def floodings_by_month_single_year(self, year):
         # convert the the dates into datetime objects
         # floodings_df["SR CREATE DATE"] = pd.to_datetime(floodings_df["SR CREATE DATE"])
 
-        flooding_df = self.all_floodings_in_year_list([year])
+        flooding_sr_df = self.all_floodings_in_year_list([year])
         # group the dates by month and count the total number of occurences
-        counts_series = flooding_df["SR CREATE DATE"] \
-            .groupby([flooding_df["SR CREATE DATE"].dt.month]) \
+        counts_series = flooding_sr_df["SR CREATE DATE"] \
+            .groupby([flooding_sr_df["SR CREATE DATE"].dt.month]) \
             .count()
 
         # change the month numbers to names
@@ -99,8 +102,8 @@ class FloodingData(object):
 
     def overdue_by_month_single_year(self, year):
         # calculate the average number of overdue days for every month of the year
-        flooding_df = self.all_floodings_in_year_list([year])
-        avg_overdue = flooding_df["OVERDUE"].groupby([flooding_df["SR CREATE DATE"].dt.month])
+        flooding_sr_df = self.all_floodings_in_year_list([year])
+        avg_overdue = flooding_sr_df["OVERDUE"].groupby([flooding_sr_df["SR CREATE DATE"].dt.month])
         avg_overdue_series = avg_overdue.mean()
 
         # change the month numbers to names
@@ -114,7 +117,7 @@ class FloodingData(object):
 
     def channel_type_count(self):
         # count the number of occurences for each Channel Type
-        channel_count_df = self.flooding_df["Channel Type"].groupby(self.flooding_df["Channel Type"]).count()
+        channel_count_df = self.flooding_sr_df["Channel Type"].groupby(self.flooding_sr_df["Channel Type"]).count()
 
         return channel_count_df
 
