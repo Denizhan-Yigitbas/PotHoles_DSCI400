@@ -1,8 +1,6 @@
 
 import pandas as pd
 import os
-from datetime import datetime
-import calendar
 
 
 class WeatherData(object):
@@ -18,19 +16,22 @@ class WeatherData(object):
         '../../data/output/'
     )
 
-    file_path = os.path.dirname(__file__)
-
     def __init__(self):
         """
         Loads weather dataframe and merge in the station data for each reading.
         """
         self.stations_df = pd.read_csv(WeatherData.data_path + 'all_tx_stations.csv')
         self.weather_df = pd.read_csv(WeatherData.data_path + 'houston_weather.csv')\
-            .merge(self.stations_df, on='station_id', how='inner')
+            .merge(self.stations_df, on='station_id', how='inner')\
+            .fillna({'time': 0})
 
         # Convert date to datetime type
-        # TODO: add time to date column
-        self.weather_df.date = pd.to_datetime(self.weather_df.date, format="%Y%m%d")
+        self.weather_df.loc[self.weather_df.time == 2400, 'time'] = 2359
+        self.weather_df['date'] = pd.to_datetime(
+            self.weather_df.date.astype(str) + ' ' + self.weather_df.time.map(lambda x: f"{int(x):04d}"),
+            format="%Y%m%d %H%M"
+        )
+        self.weather_df = self.weather_df.drop(columns='time')
 
     def weather_joined_to_csv(self):
         """
