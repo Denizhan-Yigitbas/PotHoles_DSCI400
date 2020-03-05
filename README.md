@@ -19,7 +19,7 @@ We are currently in the exploration stage of the data science pipeline for the p
 For flooding data, we recently received access to data from Rice's UrbanInstitute so we are in wrangling and exploration.
 
 ## Installing
-run `python setup.py develop` <br><br>
+
 run `pip install -r requirements.txt`
 
 ## Usage
