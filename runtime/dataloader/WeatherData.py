@@ -18,6 +18,8 @@ class WeatherData(object):
         '../../data/output/'
     )
 
+    file_path = os.path.dirname(__file__)
+
     def __init__(self):
         """
         Loads weather dataframe and merge in the station data for each reading.

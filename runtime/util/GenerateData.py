@@ -14,7 +14,7 @@ flooding_hfd = {
 }
 
 
-class GenerateData():
+class GenerateData(object):
     
     def __init__(self):
         pass

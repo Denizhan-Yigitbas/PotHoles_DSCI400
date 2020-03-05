@@ -5,9 +5,9 @@ import calendar
 from mpl_toolkits.axes_grid1 import host_subplot
 import mpl_toolkits.axisartist as AA
 
-from runtime.dataloader import WeatherData, PotholeData
+from potholes.runtime.dataloader import WeatherData, PotholeData
 
-class WeatherVSPotholes():
+class WeatherVSPotholes(object):
     def __init__(self):
         """
         Load both the weather data and pothole data

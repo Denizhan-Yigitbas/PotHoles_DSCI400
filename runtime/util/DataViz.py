@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 import gmplot
 
-from runtime.dataloader import PotholeData, FloodingData
+from potholes.runtime.dataloader import PotholeData, FloodingData
 
-class DataViz():
+class DataViz(object):
     def __init__(self):
         self.pothole = PotholeData()
         self.flooding = FloodingData()

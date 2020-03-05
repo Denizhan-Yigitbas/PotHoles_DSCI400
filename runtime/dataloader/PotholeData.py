@@ -11,11 +11,11 @@ class PotholeData(object):
 
     # This operation ensures the path to the data is correct,
     # regardless of what directory it is called from.
-    # root_path = os.path.dirname(os.path.abspath(__file__))
-    # data_path = os.path.join(
-    #     root_path,
-    #     '../../data/output/'
-    # )
+    root_path = os.path.dirname(os.path.abspath(__file__))
+    data_path = os.path.join(
+        root_path,
+        '../../data/output/'
+    )
     
 
     def __init__(self):
@@ -24,7 +24,7 @@ class PotholeData(object):
         """
         # print(pd.read_csv("../../data/output/potholePiped2015.csv"))
         self.potholes_dictionary = {
-            year: pd.read_csv("data/output/" + f"potholePiped{year}.csv")
+            year: pd.read_csv(self.data_path + f"potholePiped{year}.csv")
             for year in range(2015, 2020)
         }
         
