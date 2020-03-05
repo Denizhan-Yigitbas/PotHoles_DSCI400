@@ -41,10 +41,7 @@ class WeatherData(object):
         if df is None:
             df = self.weather_df
 
-        return df.loc[
-            (df.date >= datetime(day=1, month=1, year=year1)) &
-            (df.date < datetime(day=1, month=1, year=year2 + 1))
-        ]
+        return df.loc[df.date.year == year1]
 
     @property
     def temp_df(self):
