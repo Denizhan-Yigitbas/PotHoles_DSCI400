@@ -18,14 +18,6 @@ class Interpolator():
         self.stations['lat'] = pd.to_numeric(self.stations['lat'])
         self.stations['lon'] = pd.to_numeric(self.stations['lon'])
 
-        self.tstats = None
-        self.pstats = None
-
-
-        #[min, max, range]
-        self.lat = None
-        self.lon = None
-
         self.find_temp_stations()
         self.find_precp_stations()
 

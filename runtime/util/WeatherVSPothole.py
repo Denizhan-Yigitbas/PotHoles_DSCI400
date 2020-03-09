@@ -1,12 +1,13 @@
 from shapely.geometry import Point, Polygon
 from datetime import datetime
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
 import calendar
+from mpl_toolkits.axes_grid1 import host_subplot
+import mpl_toolkits.axisartist as AA
 
-from dataloader import WeatherData, PotholeData
+from potholes.runtime.dataloader import WeatherData, PotholeData
 
-class WeatherVSPotholes():
+class WeatherVSPotholes(object):
     def __init__(self):
         """
         Load both the weather data and pothole data
@@ -27,6 +28,8 @@ class WeatherVSPotholes():
         # create the desired DataFrames
         weather_df = weatherDat.all_weather_in_range(year1, year2)
         potholes_df = potholeDat.all_potholes_in_year_list(range(year1, year2 + 1, 1))
+        
+        
     
         # locate the input station coordinates
         station = weather_df[weather_df["station_id"] == station_id]
@@ -65,36 +68,61 @@ class WeatherVSPotholes():
         counts_df.set_index("month-year", inplace=True)
     
         # visualize the data
-        fig, ax = plt.subplots()
+        ax = host_subplot(111, axes_class=AA.Axes)
+        plt.subplots_adjust(bottom=.2, left=0.11, right=0.87)
+
+        
         x = counts_df.index
         y = counts_df["SR CREATE DATE"]
-        ax.bar(x, y, width=0.7, label="Potholes")
-        ax.set_title("Pothole formation around station " + station_id)
-        ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
-        ax.xaxis.set_minor_formatter(mdates.DateFormatter("%b %Y"))
-        ax.xaxis.set_major_locator(mdates.MonthLocator(interval=6))
-        ax.tick_params(axis='x', rotation=45)
-        ax.set_xlabel("Date")
-        ax.set_ylabel("Number of Pothole")
-        ax.legend(loc=0)
-    
-        ax2 = ax.twinx()
+
+        ax.bar(x, y,  label="Potholes")
+        ax.set_title("Pothole Formation Around Station " + station_id + " With Weather")
+        ax.axis["bottom"].major_ticklabels.set_rotation(55)
+        ax.axis["bottom"].major_ticklabels.set_pad(19)
+        ax.axis["bottom"].label.set_pad(23)
+        ax.axis["top"].toggle(all=False)
+
+        ax_prcp = ax.twinx()
+        ax_temp = ax.twinx()
+
+        offset = 60
+        new_fixed_axis = ax_temp.get_grid_helper().new_fixed_axis
+        ax_temp.axis["right"] = new_fixed_axis(loc="right",
+                                            axes=ax_temp,
+                                            offset=(offset, 0))
+
+        ax_temp.axis["right"].toggle(all=True)
+        ax_prcp.axis["right"].toggle(all=True)
+
+        ax.set_xlabel("Time")
+        ax.set_ylabel("Potholes")
+        ax_prcp.set_ylabel("Precipitation")
+        ax_temp.set_ylabel("Temperature")
+        #
+        #
         station_precip = WeatherData().avg_station_precipitation_per_month(2015, 2019, station_id)
         x = station_precip.index
         y = station_precip
-        ax2.plot(x, y, color='r', linewidth=3, label="Precipitation")
-        ax2.set_ylabel("Precipitation (tenths of mm)")
-        
+        p1, = ax_prcp.plot(list(range(len(x))), y, color='r', linewidth=3, label="Precipitation")
+        # # ax2.set_ylabel("Precipitation (tenths of mm)")
+        #
         station_temp = WeatherData().avg_station_temp_per_month(2015, 2019, station_id)
         x = station_temp.index
         y = station_temp
-        ax2.plot(x, y, color='g', linewidth=3, label="Temperature")
-        ax2.legend(loc = 1)
-        ax2.set_ylabel("Temperature (tenths of degree Celcius)")
-        
-        
-        plt.subplots_adjust(bottom=.2, left=0.11, right=0.87)
+        p2, = ax_temp.plot(list(range(len(x))), y, color='g', linewidth=3, label="Temperature")
+        # ax2.legend(loc = 1)
+        # ax2.set_ylabel("Temperature (tenths of degree Celcius)")
+
+        ax_prcp.axis["right"].label.set_color(p1.get_color())
+        ax_temp.axis["right"].label.set_color(p2.get_color())
+        # ax_temp.axis["right"].label.set_color(p3.get_color())
+        # ax.tick_params(axis='x', rotation=45)
+        # ax_prcp.tick_params(axis='x', rotation=45)
+        # ax_temp.tick_params(axis='x', rotation=45)
+
+        plt.draw()
         plt.show()
+
         
     
 if __name__ == "__main__":
