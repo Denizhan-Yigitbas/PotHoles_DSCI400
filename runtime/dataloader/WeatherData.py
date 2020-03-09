@@ -30,6 +30,8 @@ class WeatherData(object):
         # TODO: add time to date column
         self.weather_df.date = pd.to_datetime(self.weather_df.date, format="%Y%m%d")
 
+        self.weather_df.value = pd.to_numeric(self.weather_df.value)
+
     def weather_joined_to_csv(self):
         """
         Export the weather dataframe to the data/output directory with name houston_weather_joined.csv
