@@ -2,10 +2,11 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 from datetime import timedelta
+from scipy.spatial import Delaunay
 
 from dataloader import WeatherData
 class Interpolator():
-    def __init__(self, build_grid = True):
+    def __init__(self):
         self.weather = WeatherData()
         self.weather_df = self.weather.all_weather_in_range(2010, 2019)
         self.stations = pd.read_csv("../data/output/all_houston_stations.csv", dtype = str)
@@ -18,16 +19,42 @@ class Interpolator():
         self.stations['lat'] = pd.to_numeric(self.stations['lat'])
         self.stations['lon'] = pd.to_numeric(self.stations['lon'])
 
-        self.find_temp_stations()
-        self.find_precp_stations()
 
-        self.__build_grid(pd.read_csv("../data/output/potholePiped2015-2019.csv"))
-        if build_grid:
-            self.__interpolate_points()
-        else:
-            self.grid = np.load('grid.npy')
+    def interpolate_point(self, lat, lon, date):
+        date = pd.to_datetime(date, format = "%Y%m%d")
+        coord = np.array([(lat, lon)])
+        delta = timedelta(days = 365)
+        entries = np.zeros((365, 3))
+        weather = self.weather_df.loc[(self.weather_df.date < date) & (self.weather_df.date >= date - delta)]
+        for i, day in enumerate(range(365, 0, -1)):
+            delta = timedelta(days = day)
+            weather_on_day = weather.loc[weather.date == (date - delta)]
+            tmin_on_day = weather_on_day.loc[weather_on_day.reading_type == 'TMIN']
+            tmax_on_day = weather_on_day.loc[weather_on_day.reading_type == 'TMAX']
+            prcp_on_day = weather_on_day.loc[weather_on_day.reading_type == 'PRCP']
 
+            stat_coords, b_coords = self.__triangulate(prcp_on_day.station_id.unique(), coord)
 
+            print(stat_coords, b_coords)
+
+    
+    def __triangulate(self, ava_stats, coord):
+        ava_stations = self.stations.loc[self.stations.station_id.isin(ava_stats)]
+
+        points = ava_stations[['lat', 'lon']].to_numpy()
+        samples = coord
+
+        dim    = len(points[0])               # determine the dimension of the samples
+        simp   = Delaunay(points)             # create simplexes for the defined points
+        s      = simp.find_simplex(samples)   # for each sample, find corresponding simplex for each sample
+        b0      = np.zeros((len(samples),dim)) # reserve space for each barycentric coordinate
+        for ii in range(len(samples)):
+            b0[ii,:] = simp.transform[s[ii],:dim].dot((samples[ii] - simp.transform[s[ii],dim]).transpose())
+        bary_coords = np.c_[b0, 1 - b0.sum(axis=1)]
+
+        return points[simp.simplices][s[0]], bary_coords
+
+    '''
     """
     Private method to find the three nearest stations for each pothole request, and
     calculate the three interpolation weights
@@ -97,39 +124,68 @@ class Interpolator():
         empty_c = 0
         empty_val = 0.0
         starter = None
-        if t1.empty:
+        if len(t1.index) != 364:
             empty_c+=1
             empty_val += info[3]
         else:
             starter = t1
-        if t2.empty:
+        if len(t2.index) != 364:
             empty_c += 1
             empty_val +=info[4]
         else:
             starter = t2
-        if t3.empty:
+        if len(t3.index) != 364:
             empty_c += 1
             empty_val += info[5]
         else:
             starter = t3
-        print(info[3],info[4],info[5])
-        df_final = pd.DataFrame(columns = ['date', 'reading_type', 'value'])
+        
+        print("Interpolating min temp from " + str(3- empty_c) + " stations")
+        df_final = pd.DataFrame(columns = ['date', 'tm_value', 'prcp_value'])
         df_final['date'] = starter['date']
-        df_final['reading_type'] = starter['reading_type']
         df_final = df_final.fillna(0)
         df_final = df_final.reset_index(drop = True)
-        print(df_final)
-        if not t1.empty:
-            print(t1['value'].reset_index(drop = True), info[3] + empty_val / (3 - empty_c))
-            print(t1['value'].reset_index(drop = True) * (info[3] + empty_val / (3 - empty_c)))
-            df_final['value'] += t1['value'].reset_index(drop = True) * (info[3] + empty_val / (3 - empty_c))
-        if not t2.empty:
-            print(t2['value'].reset_index(drop = True) * (info[4] + empty_val / (3 - empty_c)))
-            df_final['value'] += t2['value'].reset_index(drop = True) * (info[4] + empty_val / (3 - empty_c))
-        if not t3.empty:
-            print(t3['value'].reset_index(drop = True) * (info[5] + empty_val / (3 - empty_c)))
-            df_final['value'] += t3['value'].reset_index(drop = True) * (info[5] + empty_val / (3 - empty_c))
+        
+        if len(t1.index) == 364:
+            df_final['tm_value'] += t1['value'].reset_index(drop = True) * (info[3] + empty_val / (3 - empty_c))
+        if len(t2.index) == 364:
+            df_final['tm_value'] += t2['value'].reset_index(drop = True) * (info[4] + empty_val / (3 - empty_c))
+        if len(t3.index) == 364:
+            df_final['tm_value'] += t3['value'].reset_index(drop = True) * (info[5] + empty_val / (3 - empty_c))
 
+        p1 = weather.loc[(weather.station_id == self.ps_decode[info[6]]) & (weather.reading_type == 'PRCP')]
+        p2 = weather.loc[(weather.station_id == self.ps_decode[info[7]]) & (weather.reading_type == 'PRCP')]
+        p3 = weather.loc[(weather.station_id == self.ps_decode[info[8]]) & (weather.reading_type == 'PRCP')]
+        print(p1,p2,p3)
+        empty_c = 0
+        empty_val = 0.0
+        starter = None
+        if len(p1.index) != 364:
+            empty_c+=1
+            empty_val += info[9]
+
+        if len(p2.index) != 364:
+            empty_c += 1
+            empty_val +=info[10]
+
+        if len(p3.index) != 364:
+            empty_c += 1
+            empty_val += info[11]
+
+        print("Interpolating precipitation from " + str(3- empty_c) + " stations")
+        
+        
+        print(df_final)
+        if len(p1.index) == 364:
+            print(p1['value'].reset_index(drop = True), info[9] + empty_val / (3 - empty_c))
+            print(p1['value'].reset_index(drop = True) * (info[9] + empty_val / (3 - empty_c)))
+            df_final['prcp_value'] += p1['value'].reset_index(drop = True) * (info[9] + empty_val / (3 - empty_c))
+        if len(p2.index) == 364:
+            print(p2['value'].reset_index(drop = True) * (info[10] + empty_val / (3 - empty_c)))
+            df_final['prcp_value'] += p2['value'].reset_index(drop = True) * (info[10] + empty_val / (3 - empty_c))
+        if len(p3.index) == 364:
+            print(p3['value'].reset_index(drop = True) * (info[11] + empty_val / (3 - empty_c)))
+            df_final['prcp_value'] += p3['value'].reset_index(drop = True) * (info[11] + empty_val / (3 - empty_c))
         return df_final
 
 
@@ -163,6 +219,10 @@ class Interpolator():
         h_stats = set(list(self.stations.station_id.unique()))
         final_df = self.weather_df.loc[ (self.weather_df.reading_type.isin(['TMIN', 'TMAX'])) & (self.weather_df.station_id.isin(h_stats)) ]
         self.tstats = self.stations.loc[ self.stations.station_id.isin(final_df['station_id'].unique()) ]
+        for stat in self.tstats.station_id.unique():
+            find = final_df.loc[final_df.station_id == stat]
+            if len(find.index) < 7200:
+                self.tstats = self.tstats[self.tstats.station_id != stat]
         self.ts_encode = {}
         for i, station in enumerate(final_df['station_id'].unique()):
             self.ts_encode.update({station : i})
@@ -174,9 +234,14 @@ class Interpolator():
         h_stats = set(list(self.stations.station_id.unique()))
         final_df = self.weather_df.loc[ (self.weather_df.reading_type.isin(['PRCP'])) & (self.weather_df.station_id.isin(h_stats)) ]
         self.pstats = self.stations.loc[ self.stations.station_id.isin(final_df['station_id'].unique()) ]
-        self.pstats = self.stations.loc[ self.stations.station_id.isin(final_df['station_id'].unique()) ]
+        for stat in self.pstats.station_id.unique():
+            find = final_df.loc[final_df.station_id == stat]
+            if len(find.index) < 7200:
+                self.pstats = self.pstats[self.pstats.station_id != stat]
+        print(len(self.pstats.index))
         self.ps_encode = {}
         for i, station in enumerate(final_df['station_id'].unique()):
             self.ps_encode.update({station : i})
         self.ps_decode = {v: k for k, v in self.ps_encode.items()}
         final_df.to_csv(out, index = False)
+    '''
