@@ -7,6 +7,11 @@ pothole_data = {
     2016: "../../data/raw/311-Public-Data-Extract-2016-clean.txt",
     2015: "../../data/raw/311-Public-Data-Extract-2015-clean.txt",
     'Harvey': "../../data/raw/311-Public-Data-Extract-Harvey-clean.txt",
+    2014: "../../data/raw/311-Public-Data-Extract-2014-clean.txt",
+    2013: "../../data/raw/311-Public-Data-Extract-2013-clean.txt",
+    2012: "../../data/raw/311-Public-Data-Extract-2012-clean.txt",
+    2011: "../../data/raw/311-Public-Data-Extract-2011-clean.txt",
+
 }
 
 flooding_hfd = {
@@ -95,8 +100,8 @@ class GenerateData(object):
 if __name__ == "__main__":
     piper = GenerateData()
     # year = 2019
-    # for year in list(range(2015, 2020)):
-        # piper.create_piped_csv(year)
+    #for year in list(range(2011, 2020)):
+    #   piper.create_piped_csv(year)
 
-    # piper.concat_multi_year_potholes(2015, 2019)
-    piper.create_hfd_flooding_csv()
+    piper.concat_multi_year_potholes(2011, 2018)
+    # piper.create_hfd_flooding_csv()

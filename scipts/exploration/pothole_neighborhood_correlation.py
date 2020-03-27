@@ -11,9 +11,16 @@ p = PotholeData()
 
 p.pothole_df['date'] = p.pothole_df['SR CREATE DATE'].dt.date
 
-nbrhoods = p.pothole_df['NEIGHBORHOOD'].unique()
 nbrhood_counts = p.pothole_df.groupby('NEIGHBORHOOD').date.agg('count')
 
 sorted_nbrhood_counts = nbrhood_counts.sort_values(ascending=False)
-
-sorted_nbrhood_counts.plot.hist()
+nbrhoods = sorted_nbrhood_counts.unique()
+print(sorted_nbrhood_counts)
+count_plot = sorted_nbrhood_counts.plot(kind='bar')
+ax1 = plt.axes()
+x_axis = ax1.axes.get_xaxis()
+x_axis.set_visible(False)
+plt.title("Number of Service Request Counts By Neighbood")
+plt.ylabel("Number of Pothole Service Requests")
+plt.xlabel("Neighborhoods")
+plt.show()
