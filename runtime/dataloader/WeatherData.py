@@ -56,7 +56,7 @@ class WeatherData(object):
         if df is None:
             df = self.weather_df
 
-        return df.loc[df.date.year == year1]
+        return df.loc[df.date.dt.year == year1]
 
     def station_df(self, stat_id):
         stat_df = self.weather_df.loc[self.weather_df.reading_type.isin(['TMAX', 'TMIN','PRCP'])]
