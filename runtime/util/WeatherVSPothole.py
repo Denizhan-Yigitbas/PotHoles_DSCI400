@@ -5,7 +5,8 @@ import calendar
 from mpl_toolkits.axes_grid1 import host_subplot
 import mpl_toolkits.axisartist as AA
 
-from potholes.runtime.dataloader import WeatherData, PotholeData
+from dataloader.Houston311Data import PotholeData
+from dataloader import WeatherData
 
 class WeatherVSPotholes(object):
     def __init__(self):
@@ -26,11 +27,9 @@ class WeatherVSPotholes(object):
         :return:
         """
         # create the desired DataFrames
-        weather_df = weatherDat.all_weather_in_range(year1, year2)
-        potholes_df = potholeDat.all_potholes_in_year_list(range(year1, year2 + 1, 1))
+        weather_df = self.weatherDat.all_weather_in_range(year1, year2)
+        potholes_df = self.potholeDat.all_data_in_year_list(range(year1, year2 + 1, 1))
         
-        
-    
         # locate the input station coordinates
         station = weather_df[weather_df["station_id"] == station_id]
         station_lat = station["lat"].values[0]
@@ -98,27 +97,20 @@ class WeatherVSPotholes(object):
         ax.set_ylabel("Potholes")
         ax_prcp.set_ylabel("Precipitation")
         ax_temp.set_ylabel("Temperature")
-        #
-        #
+        
         station_precip = WeatherData().avg_station_precipitation_per_month(2015, 2019, station_id)
         x = station_precip.index
         y = station_precip
         p1, = ax_prcp.plot(list(range(len(x))), y, color='r', linewidth=3, label="Precipitation")
-        # # ax2.set_ylabel("Precipitation (tenths of mm)")
-        #
+        
         station_temp = WeatherData().avg_station_temp_per_month(2015, 2019, station_id)
         x = station_temp.index
         y = station_temp
         p2, = ax_temp.plot(list(range(len(x))), y, color='g', linewidth=3, label="Temperature")
-        # ax2.legend(loc = 1)
-        # ax2.set_ylabel("Temperature (tenths of degree Celcius)")
 
         ax_prcp.axis["right"].label.set_color(p1.get_color())
         ax_temp.axis["right"].label.set_color(p2.get_color())
-        # ax_temp.axis["right"].label.set_color(p3.get_color())
-        # ax.tick_params(axis='x', rotation=45)
-        # ax_prcp.tick_params(axis='x', rotation=45)
-        # ax_temp.tick_params(axis='x', rotation=45)
+
 
         plt.draw()
         plt.show()
@@ -126,9 +118,10 @@ class WeatherVSPotholes(object):
         
     
 if __name__ == "__main__":
-    weatherDat = WeatherData()
-    potholeDat = PotholeData()
-    
-    comparer = WeatherVSPotholes()
-
-    comparer.temp_precip_potholes(2015, 2019, "USW00012918", 0.05)
+    pass
+    # weatherDat = WeatherData()
+    # potholeDat = PotholeData()
+    #
+    # comparer = WeatherVSPotholes()
+    #
+    # comparer.temp_precip_potholes(2015, 2019, "USW00012918", 0.05)

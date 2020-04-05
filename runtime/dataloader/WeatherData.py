@@ -149,5 +149,5 @@ class WeatherData(object):
         return avg_temp_df["value"]
     
 if __name__ == "__main__":
-    x = WeatherData().avg_station_temp_per_month(2015, 2019, "USW00012918")
+    pass
     

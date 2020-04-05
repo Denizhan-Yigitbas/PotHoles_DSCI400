@@ -5,6 +5,7 @@ from datetime import timedelta
 from scipy.spatial import Delaunay
 
 from dataloader import WeatherData
+
 class Interpolator():
     def __init__(self):
         self.weather = WeatherData()

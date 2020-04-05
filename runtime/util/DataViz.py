@@ -1,12 +1,14 @@
 import matplotlib.pyplot as plt
 import gmplot
 
-from potholes.runtime.dataloader import PotholeData, FloodingData
+from dataloader.Houston311Data import PotholeData, FloodingData
+from util.WeatherVSPothole import WeatherVSPotholes
 
 class DataViz(object):
     def __init__(self):
         self.pothole = PotholeData()
         self.flooding = FloodingData()
+        self.weatherVSpothole = WeatherVSPotholes()
         
     def potholes_by_month_single_year_viz(self, year):
         """
@@ -22,8 +24,23 @@ class DataViz(object):
         plt.ylabel("Number of Pothole")
         plt.subplots_adjust(bottom=.2)
         plt.show()
+
+    def floodings_by_month_single_year_viz(self, year):
+        """
+        Produce a pothole count vs time bar graph for a specific year
+
+        :param year: year to viz
+        :return: bar graph plot
+        """
+        counts_df = self.flooding.flooding_by_month_single_year(year)
+        # plot the visual
+        counts_df.plot(kind="bar", legend=False)
+        plt.title("Number of Floods Per Month in " + str(year))
+        plt.ylabel("Number of Floods")
+        plt.subplots_adjust(bottom=.2)
+        plt.show()
         
-    def overdue_by_month_single_year_viz(self, year):
+    def potholes_overdue_by_month_single_year_viz(self, year):
         """
         Produce the average overdue time to repair a pothole vs time for a given year
         
@@ -47,7 +64,7 @@ class DataViz(object):
         :return: html heatmap
         """
         # extract latitudes data - clean Nan and Unknown entries - convert to floats
-        potholes_df = self.pothole.all_potholes_in_year_list([year])
+        potholes_df = self.pothole.all_data_in_year_list([year])
 
         if all_years:
             potholes_df = self.pothole.pothole_df
@@ -73,7 +90,7 @@ class DataViz(object):
         :return: html heatmap
         """
         # extract latitudes data - clean Nan and Unknown entries - convert to floats
-        flooding_df = self.flooding.all_floodings_in_year_list([year])
+        floodings_df = self.flooding.all_data_in_year_list([year])
 
         if all_years:
             floodings_df = self.flooding.flooding_df
@@ -89,9 +106,13 @@ class DataViz(object):
 
         # create the map
         gmap.heatmap(latitudes, longitudes)
-        gmap.draw("../../data/output/flooding_heatmap_" + str(year) + ".html")
         
-    def channel_type_count(self):
+        if all_years:
+            gmap.draw("../../data/output/flooding_heatmap_ALLYEARS.html")
+        else:
+            gmap.draw("../../data/output/flooding_heatmap_" + str(year) + ".html")
+        
+    def pothole_channel_type_count(self):
         """
         Produce a count vs channel type bar graph for potholes.
     
@@ -110,12 +131,18 @@ class DataViz(object):
         plt.subplots_adjust(bottom=.28)
         plt.show()
 
+    def single_station_pothole_vs_weather(self):
+        self.weatherVSpothole.temp_precip_potholes(2015, 2019, "USW00012918", 0.05)
+    
 
 if __name__ == "__main__":
     visualizer = DataViz()
     viz_year = 2019
     
-    visualizer.potholes_by_month_single_year_viz(viz_year)
-    visualizer.overdue_by_month_single_year_viz(viz_year)
+    # visualizer.potholes_by_month_single_year_viz(viz_year)
+    # visualizer.floodings_by_month_single_year_viz(viz_year)
+    # visualizer.potholes_overdue_by_month_single_year_viz(viz_year)
     # visualizer.pothole_heat_map(2019, all_years=True)
-    visualizer.channel_type_count()
+    # visualizer.flooding_heat_map(2019, all_years=True)
+    # visualizer.pothole_channel_type_count()
+    # visualizer.single_station_pothole_vs_weather()
