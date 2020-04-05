@@ -18,6 +18,9 @@ class FireCLI:
     def pothole_vs_weather(self):
         self.visualize.single_station_pothole_vs_weather()
         
+    def potholes_meanshift(self):
+        self.visualize.mean_shift_3D()
+        
     def model(self):
         Mod = Modeler.Modeler()
         Mod.train()

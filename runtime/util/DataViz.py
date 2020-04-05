@@ -3,12 +3,14 @@ import gmplot
 
 from dataloader.Houston311Data import PotholeData, FloodingData
 from util.WeatherVSPothole import WeatherVSPotholes
+from util.MeanShift import MeanShiftComp
 
 class DataViz(object):
     def __init__(self):
         self.pothole = PotholeData()
         self.flooding = FloodingData()
         self.weatherVSpothole = WeatherVSPotholes()
+        self.meanshift = MeanShiftComp()
         
     def potholes_by_month_single_year_viz(self, year):
         """
@@ -134,6 +136,8 @@ class DataViz(object):
     def single_station_pothole_vs_weather(self):
         self.weatherVSpothole.temp_precip_potholes(2015, 2019, "USW00012918", 0.05)
     
+    def mean_shift_3D(self):
+        self.meanshift.meanshift()
 
 if __name__ == "__main__":
     visualizer = DataViz()
@@ -146,3 +150,4 @@ if __name__ == "__main__":
     # visualizer.flooding_heat_map(2019, all_years=True)
     # visualizer.pothole_channel_type_count()
     # visualizer.single_station_pothole_vs_weather()
+    visualizer.mean_shift_3D()
