@@ -28,21 +28,22 @@ run `pip install -r requirements.txt`
 Fill in here
 
 ### Data Visualization
-<i><b><u>IMPORTANT NOTE:</u></b></i>cd into the runtime directory</u></b></i> 
+<i><b><u>IMPORTANT NOTE:</u></b></i> cd into the runtime directory</u></b></i> 
 
-#####A pothole count vs time bar graph for a specific year
+##### A pothole count vs time bar graph for a specific year
 run: `python run_this.py potholes_by_month [YEAR]`
 
-#####A flood count vs time bar graph for a specific year
+##### A flood count vs time bar graph for a specific year
 run: `python run_this.py floods_by_month [YEAR]`
 
-#####The effects of temperature and precipation on pothole formation around a specific weather statoin  count vs time bar graph for a specific year
+##### The effects of temperature and precipation on pothole formation around a specific weather statoin  count vs time bar graph for a specific year
 run: `python run_this.py pothole_vs_weather`
 
-#####3D Clustering of potholes based off of location and time of formation within a specific year
+##### 3D Clustering of potholes based off of location and time of formation within a specific year
 run: `python run_this.py potholes_meanshift`
 
 
 ### Modeling
-<i><b><u>IMPORTANT NOTE:</u></b></i>cd into the runtime directory</u></b></i>
+<i><b><u>IMPORTANT NOTE:</u></b></i> cd into the runtime directory</u></b></i>
+
 run: `python run_this.py model`
