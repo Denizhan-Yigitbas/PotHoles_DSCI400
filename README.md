@@ -23,11 +23,11 @@ For flooding data, we recently received access to data from Rice's UrbanInstitut
 run `pip install -r requirements.txt`
 
 ## Usage
-### Data Gathering
+### <u>Data Gathering</u>
 
 Fill in here
 
-### Data Visualization
+### <u>Data Visualization</u>
 <i><b><u>IMPORTANT NOTE:</u></b></i> cd into the runtime directory</u></b></i> 
 
 #### A pothole count vs time bar graph for a specific year
@@ -43,7 +43,7 @@ run: `python run_this.py pothole_vs_weather`
 run: `python run_this.py potholes_meanshift`
 
 
-### Modeling
+### <u>Modeling</u>
 <i><b><u>IMPORTANT NOTE:</u></b></i> cd into the runtime directory</u></b></i>
 
 run: `python run_this.py model`
