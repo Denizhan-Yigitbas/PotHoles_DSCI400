@@ -65,8 +65,11 @@ class WeatherVSPotholes(object):
         counts_df["month-year"] = counts_df["month-year"] \
             .apply(lambda x: x.strftime('%b %Y'))
         counts_df.set_index("month-year", inplace=True)
-    
-        # visualize the data
+
+
+        # -----------PLOTTING------------------#
+        
+        plt.figure(figsize=[15.5, 6])
         ax = host_subplot(111, axes_class=AA.Axes)
         plt.subplots_adjust(bottom=.2, left=0.11, right=0.87)
 

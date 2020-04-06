@@ -28,16 +28,21 @@ run `pip install -r requirements.txt`
 Fill in here
 
 ### Data Visualization
+<i><b><u>IMPORTANT NOTE:</u></b></i>cd into the runtime directory</u></b></i> 
 
-run python runtime/util/DataViz to see visualizations on:
+#####A pothole count vs time bar graph for a specific year
+run: `python run_this.py potholes_by_month [YEAR]`
 
-1. A pothole count vs time bar graph for a specific year
-2. The average overdue time to repair a pothole vs time for a given year
-3. A count vs channel type bar graph for potholes where channel Type is the method of
- reporting a potholes i.e. Web, Phone, etc.
+#####A flood count vs time bar graph for a specific year
+run: `python run_this.py floods_by_month [YEAR]`
 
-NOT FUNCTIONING: run python runtime/util/WeatherVSPothole to see visualization on:
+#####The effects of temperature and precipation on pothole formation around a specific weather statoin  count vs time bar graph for a specific year
+run: `python run_this.py pothole_vs_weather`
 
-- The recorded temperature and precipitation recorded at a specific weather station and the
-number of potholes that formed around this weather station (within a specified radius) during 
-this time
+#####3D Clustering of potholes based off of location and time of formation within a specific year
+run: `python run_this.py potholes_meanshift`
+
+
+### Modeling
+<i><b><u>IMPORTANT NOTE:</u></b></i>cd into the runtime directory</u></b></i>
+run: `python run_this.py model`
