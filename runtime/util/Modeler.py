@@ -4,6 +4,8 @@ import numpy as np
 from sklearn.linear_model import ElasticNetCV
 from sklearn.model_selection import cross_val_score
 
+from dataloader.Houston311Data import PotholeData
+
 class Modeler():
     def __init__(self):
         self.Interpolator = Interpolation.Interpolator()
@@ -13,6 +15,7 @@ class Modeler():
         self.left = -95.5500
         self.bottom = 29.5500
         self.trained = False
+        self.pothole = PotholeData()
         
     def train(self, build_dmat = False):
         labels = self.build_labels_vector()
@@ -31,6 +34,7 @@ class Modeler():
         for score in cross_val_score(self.model, dmat, labels, cv = 10):
             print(score)
         print("")
+        
     def prediction(self, lat, lon, date):
         if not self.trained:
             print('Model has not been trained yet, train the model first with the train() method')
@@ -38,6 +42,7 @@ class Modeler():
             vector = self.Interpolator.interpolate_point(lat, lon, date)
             vector = vector.reshape(1,-1)
             print(self.model.predict(vector))
+            
     def build_data_mat(self):
         coords = []
         step = self.grid_size / self.grid_dim
@@ -57,14 +62,10 @@ class Modeler():
                     data_matrix[(year - 2015) * 768 + (month - 1) * 64 + i] = self.Interpolator.interpolate_point(coord[0],coord[1], year * 10000 + month * 100 + 1)
 
         return data_matrix
+    
     def build_labels_vector(self):
-        pot_df = pd.read_csv('../data/output/potholePiped2015-2019.csv')
+        pot_df = self.pothole.all_data_in_year_list([2015, 2016, 2017, 2018, 2019])
         pot_df = pot_df[['SR CREATE DATE', 'LATITUDE', 'LONGITUDE']]
-
-        pot_df = pot_df[pot_df['LATITUDE'].notna()]
-        pot_df = pot_df.loc[pot_df['LATITUDE'] != 'Unknown']
-        pot_df['LATITUDE'] = pd.to_numeric(pot_df['LATITUDE'])
-        pot_df['LONGITUDE'] = pd.to_numeric(pot_df['LONGITUDE'])
 
         labels = np.zeros((3840,))
         print('Counting label entries')
