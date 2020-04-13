@@ -1,4 +1,3 @@
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -22,20 +21,14 @@ dates = date_counts.index
 
 for timedelta in range(0, 361, 30):
 
-    tavg = avg_temp.loc[[d - pd.Timedelta(days=timedelta) for d in date_counts.index]]
+    tavg = avg_temp.loc[[d - pd.Timedelta(days=timedelta) for d in date_counts.index]] /10
 
-
+    plt.figure()
     plt.scatter(tavg.values, date_counts.values)
-    plt.xlabel('Average Temperature')
+    plt.xlabel('Average Temperature $^\circ$ C')
     plt.ylabel('Number of Potholes (Daily)')
 
     plt.title(f"Time delayed by {timedelta} days")
 
-    plt.show()
 
-
-
-
-
-
-
+plt.show()

@@ -103,13 +103,13 @@ class WeatherVSPotholes(object):
         
         station_precip = WeatherData().avg_station_precipitation_per_month(2015, 2019, station_id)
         x = station_precip.index
-        y = station_precip
-        p1, = ax_prcp.plot(list(range(len(x))), y, color='r', linewidth=3, label="Precipitation")
+        y = station_precip / 10
+        p1, = ax_prcp.plot(list(range(len(x))), y, color='r', linewidth=3, label="Precipitation (mm)")
         
         station_temp = WeatherData().avg_station_temp_per_month(2015, 2019, station_id)
         x = station_temp.index
-        y = station_temp
-        p2, = ax_temp.plot(list(range(len(x))), y, color='g', linewidth=3, label="Temperature")
+        y = station_temp / 10
+        p2, = ax_temp.plot(list(range(len(x))), y, color='g', linewidth=3, label="Temperature  $^\circ$ C")
 
         ax_prcp.axis["right"].label.set_color(p1.get_color())
         ax_temp.axis["right"].label.set_color(p2.get_color())
