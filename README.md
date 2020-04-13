@@ -31,15 +31,23 @@ Fill in here
 <i><b><u>IMPORTANT NOTE:</u></b></i> cd into the runtime directory</u></b></i> 
 
 #### A pothole count vs time bar graph for a specific year
+<i> This graph displays the amount of potholes that were recorded through service requests acculated every month for a single year </i>
+
 run: `python run_this.py potholes_by_month [YEAR]`
 
 #### A flood count vs time bar graph for a specific year
+<i> This graph displays the amount of flooding that was recorded through service requests acculated every month for a single year </i>
+
 run: `python run_this.py floods_by_month [YEAR]`
 
-#### The effects of temperature and precipation on pothole formation around a specific weather statoin  count vs time bar graph for a specific year
+#### The effects of temperature and precipitation on pothole formation around a specific weather statoin  count vs time bar graph for a specific year
+<i> This graph plots 3 main components: potholes, temperature, and precipitation. The graph counts the number of potholes formed around a specific radius of a single weather station and plots the temperature and precipitation data recorded at this weather station </i>
+
 run: `python run_this.py pothole_vs_weather`
 
 #### 3D Clustering of potholes based off of location and time of formation within a specific year
+<i> This plot uses spatiotemporal clusters of pothole requests around all of Houston over a specific year </i>
+
 run: `python run_this.py potholes_meanshift`
 
 
