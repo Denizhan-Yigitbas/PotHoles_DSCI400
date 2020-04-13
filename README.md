@@ -23,10 +23,6 @@ For flooding data, we recently received access to data from Rice's UrbanInstitut
 run `pip install -r requirements.txt`
 
 ## Usage
-### <u>Data Gathering</u>
-
-Fill in here
-
 ### <u>Data Visualization</u>
 <i><b><u>IMPORTANT NOTE:</u></b></i> cd into the runtime directory</u></b></i> 
 
@@ -55,3 +51,23 @@ run: `python run_this.py potholes_meanshift`
 <i><b><u>IMPORTANT NOTE:</u></b></i> cd into the runtime directory</u></b></i>
 
 run: `python run_this.py model`
+
+## Project Structure
+### Packages
+
+#### Dataloader
+2 Classes: Houston311Data, Weather Data
+
+---
+
+<b> Houston311Data </b>
+Produces various DataFrames allowing for different exploration methods through data provided by Houston 311 about pothole service requests and flooding service requests.
+Structure:
+- Super Class: Houston311Data()
+- Sub Classes of Houston311Data(): PotholeData(), FloodingData()
+
+---
+
+<b> WeatherData </b>
+Produces various DataFrames about data recorded by various weather statations around Houston
+- Class: WeatherData()
