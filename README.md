@@ -20,8 +20,7 @@ From this data, we explore potential correlations and generate a table with all 
 
 ## Current Project Status
 
-We are currently in the exploration stage of the data science pipeline for the potholes and weather, with some early modeling in the form of correlations.
-For flooding data, we recently received access to data from Rice's UrbanInstitute so we are in wrangling and exploration.
+We are currently working on producing a model to understand variosu correlations between weather and potholes
 
 ## Installing
 
