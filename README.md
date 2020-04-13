@@ -1,8 +1,13 @@
 # PotHoles_DSCI400
 
 ## Project Description
-Objective is to develop a model to predict pothole formation.
-To do so, we analyze the following datasets:
+
+This project explores the spatiotemporal patterns of pothole formation, existence, and repairs in Houston as it relates to possible underlying factors. Among these factors are weather, road condition and traffic. Currently, Houston Public Works relies partly on citizens logging 311 service requests to report potholes and identify road repairs. Based on our communication with Jesse Bounds, Houston’s Director of Innovation, there is no internal predictive model that influences repairs, so our work will aim to fill that gap, by identifying patterns in the location and timing of potholes.
+
+This project will therefore use publicly available data on service requests and pothole repairs dating back to 2011, and compare this to the historical data on weather drawn from more than 30 weather stations spread out across the city. We will explore both time series and geographic patterns, separately and together, and identify relationships between each of these factors and potholes. To explore the spatial aspect, we will first explore two dimensional maps of weather and potholes and make 2D correlations between these maps. We will also explore clusters of potholes or weather-pothole correlations. In exploring the temporal patterns we wrangle the weather and pothole data such that they can be merged into the same table with a column for the date. Then we explore similar correlations between the data sets. From this exploration we have identified weather features, particularly temperature, rainfall, and flooding to factor into pothole formation. We have also identified a relationship with the Pothole Condition Index (PCI), which will be described in a later section. From here, we will develop a predictive model, including regression, and explore more sophisticated models including classifier algorithms like ElasticNet Regression. We aim to make predictions for the formation of potholes through these models and identify possible locations that lie at risk, and suggest improvements to pothole repairs.
+
+
+Datasets:
 
 pothole service requests from the City of Houston, from http://www.houstontx.gov/311/  <br />
 weather data from the National Weather Service from https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/ <br />
@@ -53,9 +58,9 @@ run: `python run_this.py potholes_meanshift`
 run: `python run_this.py model`
 
 ## Project Structure
-### Packages
+### Packages: dataloader, util
 
-#### Dataloader
+#### dataloader
 2 Classes: Houston311Data, Weather Data
 
 ---
@@ -71,3 +76,32 @@ Structure:
 <b> WeatherData </b>
 Produces various DataFrames about data recorded by various weather statations around Houston
 - Class: WeatherData()
+
+
+
+#### util
+6 Classes: DataViz(), GenerateData(), Interpolation(), MeanShift(), Modeler(), WeatherVSPothole()
+
+---
+
+DataViz() - visualizations
+
+---
+
+GenerateData() - produce CSV
+
+---
+
+Interpolation() - interpolates data
+
+---
+
+MeanShift() - spatiotemporal visual
+
+---
+
+Modeler() - models
+
+---
+
+WeatherVSPotholes() - Compares weather and potholes for a single station
