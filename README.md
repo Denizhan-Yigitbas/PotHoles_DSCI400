@@ -63,45 +63,37 @@ run: `python run_this.py model`
 #### dataloader
 2 Classes: Houston311Data, Weather Data
 
----
 
-<b> Houston311Data </b>
+1. <b> Houston311Data </b>
 Produces various DataFrames allowing for different exploration methods through data provided by Houston 311 about pothole service requests and flooding service requests.
 Structure:
 - Super Class: Houston311Data()
 - Sub Classes of Houston311Data(): PotholeData(), FloodingData()
 
----
-
-<b> WeatherData </b>
+2. <b> WeatherData </b>
 Produces various DataFrames about data recorded by various weather statations around Houston
 - Class: WeatherData()
 
+***
 
 
 #### util
 6 Classes: DataViz(), GenerateData(), Interpolation(), MeanShift(), Modeler(), WeatherVSPothole()
 
----
 
-DataViz() - visualizations
+1. DataViz() - visualizations
 
----
 
-GenerateData() - produce CSV
+2. GenerateData() - produce CSV
 
----
 
-Interpolation() - interpolates data
+3. Interpolation() - interpolates data
 
----
 
-MeanShift() - spatiotemporal visual
+4. MeanShift() - spatiotemporal visual
 
----
 
-Modeler() - models
+5. Modeler() - models
 
----
 
-WeatherVSPotholes() - Compares weather and potholes for a single station
+6. WeatherVSPotholes() - Compares weather and potholes for a single station
