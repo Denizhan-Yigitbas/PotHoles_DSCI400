@@ -22,7 +22,7 @@ class FireCLI:
         self.visualize.mean_shift_3D()
         
     def model(self):
-        Mod = Modeler.Modeler()
+        Mod = Modeler()
         Mod.train()
 
 if __name__ == '__main__':

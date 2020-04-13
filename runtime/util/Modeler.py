@@ -26,7 +26,7 @@ class Modeler():
 
         print('Training Model')
 
-        self.model = ElasticNetCV(cv = 5, random_state = 0)
+        self.model = ElasticNetCV(cv = 5, random_state = 0, normalize=True, fit_intercept=True)
         self.model.fit(dmat, labels)
         self.trained = True
 
