@@ -20,6 +20,9 @@ class FireCLI:
 
     def pothole_weather_correlation(self, rolling_r_window_size=45, weather_type='temp'):
         self.visualize.overall_pothole_weather_correlation(rolling_r_window_size, weather_type)
+
+    def pothole_weather_timelag_correlation(self, days_back=365, weather_type='temp'):
+        self.visualize.overall_pothole_weather_time_lagged_xcorr(days_back, weather_type)
         
     def potholes_meanshift(self):
         self.visualize.mean_shift_3D()

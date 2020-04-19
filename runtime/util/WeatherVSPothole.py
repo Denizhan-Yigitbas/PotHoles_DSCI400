@@ -6,6 +6,7 @@ from mpl_toolkits.axes_grid1 import host_subplot
 import mpl_toolkits.axisartist as AA
 import pandas as pd
 import scipy.stats as stats
+import numpy as np
 
 from dataloader.Houston311Data import PotholeData
 from dataloader import WeatherData
@@ -120,13 +121,11 @@ class WeatherVSPotholes(object):
         plt.draw()
         plt.show()
 
-    def pothole_weather_correlation(self, r_window_size = 45, weather_type='temp'):
+    def generate_merged_df(self, weather_type):
         """
-        Calculates overall correlation (pearson r) between aggregate potholes and average daily weather measurements in Houston.
-        Then plots a rolling correlation between potholes and specified weather type ('temp', 'prcp') as two time series.
-        :param r_window_size: rolling window for rolling correlation plot, in days
-        :param weather_type: either 'temp' or 'prcp', to specify whether to correlate potholes with temperature or precipitation
-        :return:
+        Generates a merged DataFrame between the aggregate daily pothole service requests and the average daily weather
+        reading across Houston weather stations.
+        :return: merged_df: a merged DataFame with columns
         """
         w = self.weatherDat
         p = self.potholeDat
@@ -141,12 +140,8 @@ class WeatherVSPotholes(object):
 
         if weather_type == 'temp':
             merged_df = pd.merge(avg_temp, date_counts, right_index=True, left_index=True)
-            weather = 'Temperature'
-            units = '$^\circ$C'
         elif weather_type == 'prcp':
             merged_df = pd.merge(avg_prcp, date_counts, right_index=True, left_index=True)
-            weather = 'Precipitation'
-            units = 'mm'
 
         merged_df.columns = [weather_type, 'potholes']
 
@@ -155,6 +150,25 @@ class WeatherVSPotholes(object):
 
         # save 1+ years of data
         merged_df.truncate(after=pd.to_datetime('2018-12-31'))
+
+        return merged_df
+
+    def pothole_weather_correlation(self, r_window_size = 45, weather_type='temp'):
+        """
+        Calculates overall correlation (pearson r) between aggregate potholes and average daily weather measurements in Houston.
+        Then plots a rolling correlation between potholes and specified weather type ('temp', 'prcp') as two time series.
+        :param r_window_size: rolling window for rolling correlation plot, in days
+        :param weather_type: either 'temp' or 'prcp', to specify whether to correlate potholes with temperature or precipitation
+        :return:
+        """
+        merged_df = self.generate_merged_df(weather_type)
+
+        if weather_type == 'temp':
+            weather = 'Temperature'
+            units = '$^\circ$C'
+        elif weather_type == 'prcp':
+            weather = 'Precipitation'
+            units = 'mm'
 
         overall_pearson_r = merged_df.corr().iloc[0, 1]
         print(f"Pandas computed Pearson r: {overall_pearson_r}")
@@ -186,6 +200,57 @@ class WeatherVSPotholes(object):
         plt.suptitle(f"Pothole and {weather} data with rolling {r_window_size}-day window correlation")
 
         plt.show()
+
+    def pothole_weather_time_lagged_cross_correlation(self, days_back, weather_type):
+        """
+        Plots the time-lagged cross correlation between the aggregate daily potholes and the average weather readings across Houston.
+        Specify the number of days back to shift the weather time-signal, and the weather_type
+        :param days_back: maximum number of days back to compute the time-lagged cross correlation
+        :param type_weather: 'temp' or 'prcp'
+        :return:
+        """
+
+        merged_df = self.generate_merged_df(weather_type)
+
+        if weather_type == 'temp':
+            weather = 'Temperature'
+        elif weather_type == 'prcp':
+            weather = 'Precipitation'
+
+        d1 = merged_df['potholes']
+        d2 = merged_df[weather_type]
+
+        rs = [self.crosscorr(d1, d2, lag) for lag in range(-days_back, 0)]
+        offset = np.argmax(rs)
+        f, ax = plt.subplots(figsize=(14, 3))
+        ax.plot(rs)
+        ax.axvline(np.argmax(rs), color='r', linestyle='--', label='Peak synchrony')
+        ax.set(
+            title=f'Time-Lagged Cross-correlation between {weather} and potholes: \n {weather} leads potholes by {offset} days',
+            xlabel='Days of Lag',
+            ylabel='Pearson r')
+        plt.legend()
+
+        plt.show()
+
+    def crosscorr(self, datax, datay, lag=0, wrap=False):
+        """ Lag-N cross correlation.
+        Shifted data filled with NaNs
+
+        Parameters
+        ----------
+        lag : int, default 0
+        datax, datay : pandas.Series objects of equal length
+        Returns
+        ----------
+        crosscorr : float
+        """
+        if wrap:
+            shiftedy = datay.shift(lag)
+            shiftedy.iloc[:lag] = datay.iloc[-lag:].values
+            return datax.corr(shiftedy)
+        else:
+            return datax.corr(datay.shift(lag))
         
     
 if __name__ == "__main__":

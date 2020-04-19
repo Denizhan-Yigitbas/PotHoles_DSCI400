@@ -146,6 +146,16 @@ class DataViz(object):
         """
         self.weatherVSpothole.pothole_weather_correlation(r_window_size=rolling_r_window_size, weather_type=type_weather)
 
+    def overall_pothole_weather_time_lagged_xcorr(self, days=365, type_weather='temp'):
+        """
+        Calls the method in WeatherVSPothole to visualize time-lagged cross correlation between aggregate daily potholes
+        and average daily weather readings.
+        :param days: number of days back to plot the time-lagged cross-correlation
+        :param weather_type: either 'temp' or 'prcp', to correlate potholes with temperature or precipitation
+        :return:
+        """
+        self.weatherVSpothole.pothole_weather_time_lagged_cross_correlation(days_back=days, weather_type=type_weather)
+
     def mean_shift_3D(self):
         self.meanshift.meanshift()
 
