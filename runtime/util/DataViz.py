@@ -135,7 +135,16 @@ class DataViz(object):
 
     def single_station_pothole_vs_weather(self):
         self.weatherVSpothole.temp_precip_potholes(2015, 2019, "USW00012918", 0.05)
-    
+
+    def overall_pothole_precipitation_correlation(self, rolling_r_window_size=45):
+        """
+        Calls the method in WeatherVSPothole to visualize correlation between aggregate daily potholes and average daily
+        precipitation.
+        :param rolling_r_window_size: rolling window for rolling correlation plot, in days
+        :return:
+        """
+        self.weatherVSpothole.pothole_precipitation_correlation(r_window_size=rolling_r_window_size)
+
     def mean_shift_3D(self):
         self.meanshift.meanshift()
 
