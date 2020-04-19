@@ -50,6 +50,11 @@ run: `python run_this.py pothole_vs_weather`
   
 run: `python run_this.py pothole_weather_correlation [rolling_r_window_size (days)] [weather type: 'temp' or 'prcp']
 
+#### Time-lagged Cross Correlation between aggregate pothole requests and the average daily precipitation and temperature recordings across Houston.
+<i> This graph plots the time-lagged cross correlation between average daily weather recordings (weather type specified by the user), and aggregate pothole service requests. This shows the peak synchrony over the given range of time lags in days. The inputs will default to 365 and 'temp' if no input is given. </i>
+  
+run: `python run_this.py pothole_weather_timelag_correlation [days to time shift back] [weather type: 'temp' or 'prcp']
+
 
 #### 3D Clustering of potholes based off of location and time of formation within a specific year
 <i> This plot uses spatiotemporal clusters of pothole requests around all of Houston over a specific year </i>
