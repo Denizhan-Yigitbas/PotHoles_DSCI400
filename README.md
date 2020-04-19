@@ -48,13 +48,17 @@ run: `python run_this.py pothole_vs_weather`
 #### Correlating aggregate pothole requests and the average daily precipitation and temperature recordings across Houston.
 <i> This graph plots 2 graphs. The top one is the aggreagate daily potholes requests and the average daily weather recordings (specified by the user) as two time series, sharing the same x axis. The bottom graph is the rolling r value, using a specified window size in days. The inputs will default to 45 and 'temp' if no input is given. </i>
   
-run: `python run_this.py pothole_weather_correlation [rolling_r_window_size (days)] [weather type: 'temp' or 'prcp']
+run: `python run_this.py pothole_weather_correlation [rolling_r_window_size (days)] [weather type: 'temp' or 'prcp']`
 
 #### Time-lagged Cross Correlation between aggregate pothole requests and the average daily precipitation and temperature recordings across Houston.
 <i> This graph plots the time-lagged cross correlation between average daily weather recordings (weather type specified by the user), and aggregate pothole service requests. This shows the peak synchrony over the given range of time lags in days. The inputs will default to 365 and 'temp' if no input is given. </i>
   
-run: `python run_this.py pothole_weather_timelag_correlation [days to time shift back] [weather type: 'temp' or 'prcp']
+run: `python run_this.py pothole_weather_timelag_correlation [days to time shift back] [weather type: 'temp' or 'prcp']`
 
+#### Scatter plot time-lagged weather vs pothole features, with linear regression fitted.
+<i> This graph scatters aggregate daily pothole requests with time-shifted daily average weather features, specified by the user.  </i>
+  
+run: `python run_this.py scatter_pothole_weather_timelag [day_lag] [weather_type: 'temp' or 'prcp'] [log_plot=True or False]`
 
 #### 3D Clustering of potholes based off of location and time of formation within a specific year
 <i> This plot uses spatiotemporal clusters of pothole requests around all of Houston over a specific year </i>
