@@ -42,6 +42,7 @@ dates = date_counts.index
 # remove time stamp
 avg_prcp.index = avg_prcp.index.date
 
+
 merged_df = pd.merge(avg_prcp, date_counts, right_index = True, left_index= True)
 merged_df.columns = ['prcp', 'potholes']
 

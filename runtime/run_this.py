@@ -18,8 +18,8 @@ class FireCLI:
     def pothole_vs_weather(self):
         self.visualize.single_station_pothole_vs_weather()
 
-    def pothole_precipitation_correlation(self, rolling_r_window_size=45):
-        self.visualize.overall_pothole_precipitation_correlation(rolling_r_window_size)
+    def pothole_weather_correlation(self, rolling_r_window_size=45, weather_type='temp'):
+        self.visualize.overall_pothole_weather_correlation(rolling_r_window_size, weather_type)
         
     def potholes_meanshift(self):
         self.visualize.mean_shift_3D()
