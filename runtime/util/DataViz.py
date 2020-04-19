@@ -156,6 +156,19 @@ class DataViz(object):
         """
         self.weatherVSpothole.pothole_weather_time_lagged_cross_correlation(days_back=days, weather_type=type_weather)
 
+    def scatter_timelagged_weather_pothole_correlation(self, time_delta, weather_type, log_plot, show_regression):
+        """
+        Calls the method in WeatherVSPothole to visualize weather on the x axis against potholes on the y axis,
+        with line of best fit shown.
+        Option to show scatter plot ons loglog scale, or to hide regression, and control the time lag in days
+        :param time_delta: number of days to lag the potholes ahead of the weather features
+        :param weather_type: 'prcp' or 'temp'
+        :param log_plot: boolean to indicate normal scale or loglog scale
+        :param show_regression: boolean to indicate whether to show the regression line and statistics
+        :return:
+        """
+        self.weatherVSpothole.scatter_timelagged_weather_pothole_correlation(time_delta, weather_type, log_plot, show_regression)
+
     def mean_shift_3D(self):
         self.meanshift.meanshift()
 

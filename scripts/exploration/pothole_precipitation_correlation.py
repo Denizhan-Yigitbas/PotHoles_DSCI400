@@ -23,10 +23,10 @@ date_counts = p.pothole_df.groupby('date').date.agg('count')
 dates = date_counts.index
 
 
-
+log_plot = True;
 # # calculate time lagged correlation
 for timedelta in [0,30, 60, 135, 141]:
-    prcp_avg = avg_prcp.loc[[d - pd.Timedelta(days=timedelta) for d in dates]] /10
+    prcp_avg = avg_prcp.loc[[d - pd.Timedelta(days=timedelta) for d in dates]]
 
     fig, ax = plt.subplots()
     ax.scatter(prcp_avg.values, date_counts.values)

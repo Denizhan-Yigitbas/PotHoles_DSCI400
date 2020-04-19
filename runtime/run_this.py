@@ -23,7 +23,10 @@ class FireCLI:
 
     def pothole_weather_timelag_correlation(self, days_back=365, weather_type='temp'):
         self.visualize.overall_pothole_weather_time_lagged_xcorr(days_back, weather_type)
-        
+
+    def scatter_pothole_weather_timelag(self, day_lag=30, weather_type='temp', log_plot=False, show_regression=True):
+        self.visualize.scatter_timelagged_weather_pothole_correlation(day_lag, weather_type, log_plot, show_regression)
+
     def potholes_meanshift(self):
         self.visualize.mean_shift_3D()
         

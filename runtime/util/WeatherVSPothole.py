@@ -181,7 +181,7 @@ class WeatherVSPotholes(object):
         # plot rolling pearson R in a subplot with the time series on top
         # Compute rolling window synchrony
         rolling_r = merged_df['potholes'].rolling(window=r_window_size, center=True).corr(merged_df[weather_type])
-        f, ax = plt.subplots(2, 1, figsize=(14, 6), sharex=True)
+        f, ax = plt.subplots(2, 1, figsize=(14, 6))
         # merged_df.rolling(window=1,center=True).median().plot(ax=ax[0])
 
         # plot both time series
@@ -190,7 +190,7 @@ class WeatherVSPotholes(object):
 
         ax1 = ax[0].twinx()
         merged_df['potholes'].plot(ax=ax1, color='orange')
-        ax1.set(ylabel='# potholes')
+        ax1.set(ylabel='# potholes', xlabel='Year')
         ax1.yaxis.label.set_color('orange')
         ax1.tick_params(axis='y', colors='orange')
 
@@ -243,15 +243,67 @@ class WeatherVSPotholes(object):
         ax[1].legend()
 
         plt.show()
-    def scatter_timelagged_weather_pothole_correlation(self, time_delta=30, weather_type='prcp', log_plot=False):
+
+    def scatter_timelagged_weather_pothole_correlation(self, timedelta, weather_type, log_plot, show_regression):
         """
-        Plots weather on the x axis against potholes on the y axis
-        :param time_delta:
-        :param log_plot:
+        Scatter plots weather on the x axis against potholes on the y axis, with line of best fit shown.
+        Option to show scatter plot ons loglog scale, or to hide regression, and control the time lag in days
+        :param time_delta: number of days to lag the potholes ahead of the weather features
+        :param weather_type: 'prcp' or 'temp'
+        :param log_plot: boolean to indicate normal scale or loglog scale
+        :param show_regression: boolean to indicate whether to show the regression line and statistics
         :return:
         """
-        pass
+        w = self.weatherDat
+        p = self.potholeDat
 
+        if weather_type == 'prcp':
+            avg_wthr = w.precipitation_df.groupby('date').value.agg('mean') / 10
+            weather = 'Precipitation'
+            units = 'mm'
+        elif weather_type == 'temp':
+            avg_wthr = w.temp_df.groupby('date').value.agg('mean') / 10
+            units = '$^\circ$C'
+            weather = 'Temperature'
+
+
+        p.pothole_df['date'] = p.pothole_df['SR CREATE DATE'].dt.date
+        date_counts = p.pothole_df.groupby('date').date.agg('count')
+
+        dates = date_counts.index
+
+        # # calculate and plot time lagged correlation
+        shift_wthr = avg_wthr.loc[[d - pd.Timedelta(days=timedelta) for d in dates]]
+
+        fig, ax = plt.subplots()
+        ax.scatter(shift_wthr.values, date_counts.values)
+        ax.set_xlabel(f'Average {weather} ({units})')
+        ax.set_ylabel('Number of Potholes (Daily)')
+
+        x = shift_wthr.values
+        y = date_counts.values
+
+        if show_regression:
+            m, b, r_value, p_value, std_err = stats.linregress(x, y)
+            sorted_indices = np.argsort(x)
+            sorted_x = x[sorted_indices]
+            ax.plot(sorted_x, m * sorted_x + b, 'r',
+                    label='y={:.2f}x+{:.2f}; $r^2$={:.2f}; p={:.2f}'.format(m, b, r_value ** 2, p_value))
+
+        # Make axis logarithmic
+        if log_plot:
+            ax.set_yticks([2 ** i for i in range(0, 8)])
+            xrange = [2 ** i for i in range(-1, 8)]
+            xrange.insert(0, 0)
+            ax.set_xticks(xrange)
+            ax.set_yscale('log', basey=2)
+            ax.set_xscale('log', basex=2)
+
+        if show_regression:
+            plt.legend()
+
+        plt.title(f"Time delayed by {timedelta} days")
+        plt.show()
 
     def crosscorr(self, datax, datay, lag=0, wrap=False):
         """ Lag-N cross correlation.
