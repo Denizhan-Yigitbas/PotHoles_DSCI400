@@ -45,6 +45,12 @@ run: `python run_this.py floods_by_month [YEAR]`
 
 run: `python run_this.py pothole_vs_weather`
 
+#### Correlating aggregate pothole requests and the average daily precipitation and temperature recordings across Houston.
+<i> This graph plots 2 graphs. The top one is the aggreagate daily potholes requests and the average daily weather recordings (specified by the user) as two time series, sharing the same x axis. The bottom graph is the rolling r value, using a specified window size in days. The inputs will default to 45 and 'temp' if no input is given. </i>
+  
+run: `python run_this.py pothole_weather_correlation [rolling_r_window_size (days)] [weather type: 'temp' or 'prcp']
+
+
 #### 3D Clustering of potholes based off of location and time of formation within a specific year
 <i> This plot uses spatiotemporal clusters of pothole requests around all of Houston over a specific year </i>
 
@@ -95,4 +101,4 @@ Produces various DataFrames about data recorded by various weather statations ar
 5. Modeler() - models
 
 
-6. WeatherVSPotholes() - Compares weather and potholes for a single station
+6. WeatherVSPotholes() - Compares weather and potholes for a single station, and examines correlations between daily pothole requests and average daily weather recordings from all stations
