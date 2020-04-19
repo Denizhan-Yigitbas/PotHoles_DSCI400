@@ -243,6 +243,15 @@ class WeatherVSPotholes(object):
         ax[1].legend()
 
         plt.show()
+    def scatter_timelagged_weather_pothole_correlation(self, time_delta=30, weather_type='prcp', log_plot=False):
+        """
+        Plots weather on the x axis against potholes on the y axis
+        :param time_delta:
+        :param log_plot:
+        :return:
+        """
+        pass
+
 
     def crosscorr(self, datax, datay, lag=0, wrap=False):
         """ Lag-N cross correlation.

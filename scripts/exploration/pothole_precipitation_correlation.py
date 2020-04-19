@@ -40,12 +40,15 @@ for timedelta in [0,30, 60, 135, 141]:
     sorted_indices = np.argsort(x)
     sorted_x = x[sorted_indices]
     ax.plot(sorted_x, m * sorted_x + b, 'r', label='y={:.2f}x+{:.2f}; $r^2$={:.2f}; p={:.2f}'.format(m, b, r_value**2, p_value))
-    # ax.set_yticks([2**i for i in range(0,8)])
-    # xrange = [2**i for i in range(-1,8)]
-    # xrange.insert(0,0)
-    # ax.set_xticks(xrange)
-    # ax.set_yscale('log', basey=2)
-    # ax.set_xscale('log', basex=2)
+
+    # Make axis logarithmic
+    if log_plot == True:
+        ax.set_yticks([2**i for i in range(0,8)])
+        xrange = [2**i for i in range(-1,8)]
+        xrange.insert(0,0)
+        ax.set_xticks(xrange)
+        ax.set_yscale('log', basey=2)
+        ax.set_xscale('log', basex=2)
 
     plt.legend()
     plt.title(f"Time delayed by {timedelta} days")

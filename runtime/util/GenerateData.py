@@ -66,6 +66,15 @@ class GenerateData(object):
         df_service = self.__create_service_dataframe(pothole_data[year])
         df_pothole = self.__find_pothole_request(df_service)
         df_flooding = self.__find_flooding_request(df_service)
+
+        # Need to add Harvey service requests to the 2017 data
+        if year == 2017:
+            df_service_harvey = self.__create_service_dataframe(pothole_data['Harvey'])
+            df_pothole_harvey = self.__find_pothole_request(df_service_harvey)
+            df_flooding_harvey = self.__find_flooding_request(df_service_harvey)
+            df_pothole = df_pothole.append(df_pothole_harvey)
+            df_flooding = df_flooding.append(df_flooding_harvey)
+
         df_pothole.to_csv("../../data/output/potholePiped" + str(year) + ".csv", index=False)
         df_flooding.to_csv("../../data/output/floodingPiped" + str(year) + ".csv", index=False)
 
@@ -82,12 +91,9 @@ class GenerateData(object):
         df_final = pd.concat(df_list)
         df_final.to_csv("../../data/output/potholePiped" + str(start_year) + "-" + str(end_year) + ".csv", index=False)
 
-            
-    
 if __name__ == "__main__":
-    piper = GenerateData()
+    # piper = GenerateData()
     # year = 2019
     #for year in list(range(2011, 2020)):
-    #   piper.create_piped_csv(year)
-
-    piper.concat_multi_year_potholes(2011, 2018)
+    # piper.create_piped_csv(2017)
+    # piper.concat_multi_year_potholes(2011, 2018)
