@@ -221,15 +221,26 @@ class WeatherVSPotholes(object):
         d2 = merged_df[weather_type]
 
         rs = [self.crosscorr(d1, d2, lag) for lag in range(-days_back, 0)]
+        rs2 = [r ** 2 for r in rs]
+
         offset = np.argmax(rs)
-        f, ax = plt.subplots(figsize=(14, 3))
-        ax.plot(rs)
-        ax.axvline(np.argmax(rs), color='r', linestyle='--', label='Peak synchrony')
-        ax.set(
-            title=f'Time-Lagged Cross-correlation between {weather} and potholes: \n {weather} leads potholes by {offset} days',
-            xlabel='Days of Lag',
+
+        f, ax = plt.subplots(2, 1, figsize=(14, 6), sharex=True)
+        # f, ax = plt.subplots(figsize=(14, 3))
+        ax[0].plot(rs)
+        ax[0].axvline(np.argmax(rs), color='r', linestyle='--', label='Peak synchrony')
+        ax[0].set(
+            title=f'Time-Lagged Cross-correlation between {weather} and potholes: \n {weather} leads potholes by {offset} days for r',
             ylabel='Pearson r')
-        plt.legend()
+        ax[0].legend()
+
+        ax[1].plot(rs2)
+        ax[1].axvline(np.argmax(rs2), color='r', linestyle='--', label='Peak $r^2$')
+        ax[1].set(
+            title=f'{weather} leads potholes by {offset} days for $r^2$',
+            xlabel='Days of Lag',
+            ylabel='Pearson $r^2$')
+        ax[1].legend()
 
         plt.show()
 

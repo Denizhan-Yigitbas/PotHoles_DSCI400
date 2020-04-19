@@ -25,19 +25,34 @@ dates = date_counts.index
 
 
 # # calculate time lagged correlation
-# for timedelta in range(0, 361, 30):
-#
-#     prcp_avg = avg_prcp.loc[[d - pd.Timedelta(days=timedelta) for d in dates]] /10
-#
-#     plt.figure()
-#     plt.scatter(prcp_avg.values, date_counts.values)
-#     plt.xlabel('Average Precipitation (mm)')
-#     plt.ylabel('Number of Potholes (Daily)')
-#     plt.title(f"Time delayed by {timedelta} days")
+for timedelta in [0,30, 60, 135, 141]:
+    prcp_avg = avg_prcp.loc[[d - pd.Timedelta(days=timedelta) for d in dates]] /10
+
+    fig, ax = plt.subplots()
+    ax.scatter(prcp_avg.values, date_counts.values)
+    ax.set_xlabel('Average Precipitation (mm)')
+    ax.set_ylabel('Number of Potholes (Daily)')
+
+    x = prcp_avg.values
+    y = date_counts.values
+
+    m, b, r_value, p_value, std_err = stats.linregress(x, y)
+    sorted_indices = np.argsort(x)
+    sorted_x = x[sorted_indices]
+    ax.plot(sorted_x, m * sorted_x + b, 'r', label='y={:.2f}x+{:.2f}; $r^2$={:.2f}; p={:.2f}'.format(m, b, r_value**2, p_value))
+    # ax.set_yticks([2**i for i in range(0,8)])
+    # xrange = [2**i for i in range(-1,8)]
+    # xrange.insert(0,0)
+    # ax.set_xticks(xrange)
+    # ax.set_yscale('log', basey=2)
+    # ax.set_xscale('log', basex=2)
+
+    plt.legend()
+    plt.title(f"Time delayed by {timedelta} days")
 
 
 # find pearson r between two time series representation
-# plt.show()
+plt.show()
 
 # remove time stamp
 avg_prcp.index = avg_prcp.index.date
@@ -87,38 +102,38 @@ print(f"Scipy computed Pearson r: {r} and p-value: {p}")
 #     ax[1].set(xlabel='Year',ylabel='Pearson r')
 #     plt.suptitle(f"Pothole and Weather data with rolling {r_window_size}-day window correlation")
 #
-
-def crosscorr(datax, datay, lag=0, wrap=False):
-    """ Lag-N cross correlation.
-    Shifted data filled with NaNs
-
-    Parameters
-    ----------
-    lag : int, default 0
-    datax, datay : pandas.Series objects of equal length
-    Returns
-    ----------
-    crosscorr : float
-    """
-    if wrap:
-        shiftedy = datay.shift(lag)
-        shiftedy.iloc[:lag] = datay.iloc[-lag:].values
-        return datax.corr(shiftedy)
-    else:
-        return datax.corr(datay.shift(lag))
-
-
-d1 = merged_df['potholes']
-d2 = merged_df['prcp']
-
-days = 365
-rs = [crosscorr(d1, d2, lag) for lag in range(-days*2, 0)]
-offset = np.argmax(rs)
-f, ax = plt.subplots(figsize=(14, 3))
-ax.plot(rs)
-ax.axvline(np.argmax(rs), color='r', linestyle='--', label='Peak synchrony')
-ax.set(title=f'Time-Lagged Cross-correlation between precipitation and potholes: \n precipitation leads potholes by {offset} days', xlabel='Days of Lag',
-       ylabel='Pearson r')
-plt.legend()
-
-plt.show()
+#
+# def crosscorr(datax, datay, lag=0, wrap=False):
+#     """ Lag-N cross correlation.
+#     Shifted data filled with NaNs
+#
+#     Parameters
+#     ----------
+#     lag : int, default 0
+#     datax, datay : pandas.Series objects of equal length
+#     Returns
+#     ----------
+#     crosscorr : float
+#     """
+#     if wrap:
+#         shiftedy = datay.shift(lag)
+#         shiftedy.iloc[:lag] = datay.iloc[-lag:].values
+#         return datax.corr(shiftedy)
+#     else:
+#         return datax.corr(datay.shift(lag))
+#
+#
+# d1 = merged_df['potholes']
+# d2 = merged_df['prcp']
+#
+# days = 365
+# rs = [crosscorr(d1, d2, lag) for lag in range(-days*2, 0)]
+# offset = np.argmax(rs)
+# f, ax = plt.subplots(figsize=(14, 3))
+# ax.plot(rs)
+# ax.axvline(np.argmax(rs), color='r', linestyle='--', label='Peak synchrony')
+# ax.set(title=f'Time-Lagged Cross-correlation between precipitation and potholes: \n precipitation leads potholes by {offset} days', xlabel='Days of Lag',
+#        ylabel='Pearson r')
+# plt.legend()
+#
+# plt.show()
