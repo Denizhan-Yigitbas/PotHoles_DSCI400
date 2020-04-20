@@ -20,7 +20,7 @@ From this data, we explore potential correlations and generate a table with all 
 
 ## Current Project Status
 
-We are currently working on producing a model to understand variosu correlations between weather and potholes
+Making our final analysis on our output data about pothole and weather.
 
 ## Installing
 
