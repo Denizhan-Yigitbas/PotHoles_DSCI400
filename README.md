@@ -75,7 +75,7 @@ run: `python run_this.py model`
 ### Packages: dataloader, util
 
 #### dataloader
-2 Classes: Houston311Data, Weather Data
+3 Classes: Houston311Data, PotholeData(Subclass of Houston311Data), Weather Data
 
 
 1. <b> Houston311Data </b>
@@ -92,19 +92,19 @@ Produces various DataFrames about data recorded by various weather statations ar
 
 
 #### util
-6 Classes: DataViz(), GenerateData(), Interpolation(), MeanShift(), Modeler(), WeatherVSPothole()
+6 Classes: DataViz, GenerateData, Interpolation, MeanShift, Modeler, WeatherVSPothole
 
 
-1. DataViz() - visualizations
+1. DataViz() - visualizations to be run in the CLI
 
 
-2. GenerateData() - produce CSV
+2. GenerateData() - produces CSV from raw service requests from Houston 311 website
 
 
-3. Interpolation() - interpolates data
+3. Interpolation() - performs interpolation on the data for potholes and weather
 
 
-4. MeanShift() - spatiotemporal visual
+4. MeanShift() - spatiotemporal visual for grouping
 
 
 5. Modeler() - models

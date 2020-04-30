@@ -19,10 +19,11 @@ class GenerateData(object):
     def __init__(self):
         pass
     
-    """
-    Private method that creates a DataFrame for Pothole Service Request
-    """
     def __create_service_dataframe(self, pothole_data):
+        """
+        Private method that creates a DataFrame for Pothole Service Request
+        :param pothole_data: data dictionary
+        """
         # Reads piped text file of service requests into DataFrame
         df_service = pd.read_csv(pothole_data, delimiter='|', error_bad_lines=False)
         df_service.columns = df_service.columns.str.strip()
@@ -30,10 +31,11 @@ class GenerateData(object):
         df_service_trimmed = df_service.apply(lambda x: x.str.strip() if x.dtype == "object" else x)
         return df_service_trimmed
     
-    """
-    Private method to find pothole based on service requests
-    """
     def __find_pothole_request(self, df_service):
+        """
+        Private method to find pothole based on service requests
+        :param df_service: service request dataframe
+        """
         idx = df_service.columns.get_loc('SR TYPE')
         not_pot = []
         # Find the row index of all service requests unrelated to potholes and compile into list
@@ -59,10 +61,11 @@ class GenerateData(object):
         df_flooding.reset_index()
         return df_flooding
 
-    """
-    Public method that exports a csv of the pothole data into data/outputs/ directory
-    """
     def create_piped_csv(self, year):
+        """
+        Public method that exports a csv of the pothole data into data/outputs/ directory
+        :param year: input year
+        """
         df_service = self.__create_service_dataframe(pothole_data[year])
         df_pothole = self.__find_pothole_request(df_service)
         df_flooding = self.__find_flooding_request(df_service)

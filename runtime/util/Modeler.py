@@ -18,6 +18,12 @@ class Modeler():
         self.pothole = PotholeData()
         
     def train(self, build_dmat = False):
+        """
+        Training for the model
+        :param build_dmat: determines if to construct a new data matrix (default: true). If false, uses
+        existing data matrix from data/output directory
+        :return: prints correlation console
+        """
         labels = self.build_labels_vector()
         if build_dmat:
             dmat = self.build_data_mat()
@@ -36,6 +42,13 @@ class Modeler():
         print("")
         
     def prediction(self, lat, lon, date):
+        """
+        Predictor for potholes
+        :param lat: latitude coordinate
+        :param lon: longitude coordinate
+        :param date: date
+        :return:
+        """
         if not self.trained:
             print('Model has not been trained yet, train the model first with the train() method')
         else:
@@ -44,6 +57,10 @@ class Modeler():
             print(self.model.predict(vector))
             
     def build_data_mat(self):
+        """
+        helper method to construct a new data matrix
+        :return: np.array for data matrix
+        """
         coords = []
         step = self.grid_size / self.grid_dim
         lleft = self.left + step / 2
@@ -64,6 +81,10 @@ class Modeler():
         return data_matrix
     
     def build_labels_vector(self):
+        """
+        Constructs the label vector
+        :return: np.array
+        """
         pot_df = self.pothole.all_data_in_year_list([2015, 2016, 2017, 2018, 2019])
         pot_df = pot_df[['SR CREATE DATE', 'LATITUDE', 'LONGITUDE']]
 

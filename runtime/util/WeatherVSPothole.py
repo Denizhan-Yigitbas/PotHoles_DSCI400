@@ -330,7 +330,7 @@ if __name__ == "__main__":
     # weatherDat = WeatherData()
     # potholeDat = PotholeData()
     #
-    comparer = WeatherVSPotholes()
-    comparer.pothole_precipitation_correlation()
+    # comparer = WeatherVSPotholes()
+    # comparer.pothole_precipitation_correlation()
 
     # comparer.temp_precip_potholes(2015, 2019, "USW00012918", 0.05)

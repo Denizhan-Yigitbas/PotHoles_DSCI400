@@ -22,6 +22,13 @@ class Interpolator():
 
 
     def interpolate_point(self, lat, lon, date):
+        """
+        Interpolates a given coordinate and date
+        :param lat: latitude
+        :param lon: longitiude
+        :param date: date
+        :return: np.array
+        """
         date = pd.to_datetime(date, format = "%Y%m%d")
         coord = np.array([(lat, lon)])
         delta = timedelta(days = 365)
@@ -89,8 +96,13 @@ class Interpolator():
 
         return stat_ids[pairs[0][0]]
 
-    #def __check_freeze():
     def __triangulate(self, ava_stats, coord):
+        """
+        Private method to triangulate the data
+        :param ava_stats: ava statistics
+        :param coord: location coordinate
+        :return:
+        """
         ava_stations = self.stations.loc[self.stations.station_id.isin(ava_stats)]
 
         points = ava_stations[['station_id', 'lat', 'lon']].to_numpy()
