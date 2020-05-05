@@ -6,52 +6,67 @@ import os
 import scipy.stats as stats
 
 sys.path.append(os.path.abspath("../../runtime/"))
-from dataloader import WeatherData, PotholeData
+from dataloader import WeatherData, PotholeData, FloodingData
 
 
 w = WeatherData()
 p = PotholeData()
+f = FloodingData()
 
 
 # date_only = w.precipitation_df['date'].apply(lambda x:x.date().strftime('%y-%m-%d'))
 avg_prcp = w.precipitation_df.groupby('date').value.agg('mean') /10
-
+avg_prcp_above_64 = avg_prcp.drop()
 
 p.pothole_df['date'] = p.pothole_df['SR CREATE DATE'].dt.date
 date_counts = p.pothole_df.groupby('date').date.agg('count')
+
+f.flooding_df['date']= f.flooding_df['SR CREATE DATE'].dt.date
 
 dates = date_counts.index
 
 
 log_plot = True;
+timedelta = 0
+r_value = 0
+max_r_value = [0,0]
 # # calculate time lagged correlation
-for timedelta in [0,30, 60, 135, 141]:
+while (r_value**2) < .08 and timedelta<5*365:
     prcp_avg = avg_prcp.loc[[d - pd.Timedelta(days=timedelta) for d in dates]]
-
-    fig, ax = plt.subplots()
-    ax.scatter(prcp_avg.values, date_counts.values)
-    ax.set_xlabel('Average Precipitation (mm)')
-    ax.set_ylabel('Number of Potholes (Daily)')
-
-    x = prcp_avg.values
+    prcp_avg_above64 = avg_prcp_above_64.loc[[d - pd.Timedelta(days=timedelta) for d in dates]]
+    # x = prcp_avg.values
+    x = prcp_avg_above64.values
     y = date_counts.values
 
     m, b, r_value, p_value, std_err = stats.linregress(x, y)
-    sorted_indices = np.argsort(x)
-    sorted_x = x[sorted_indices]
-    ax.plot(sorted_x, m * sorted_x + b, 'r', label='y={:.2f}x+{:.2f}; $r^2$={:.2f}; p={:.2f}'.format(m, b, r_value**2, p_value))
+    print(f'Time-Delta: {timedelta}, r^2: {r_value**2}')
+    print(f'Is r^2<.08:{(r_value**2) < .08}, max r:{max_r_value}')
+    if r_value > max_r_value[0]:
+        max_r_value = [r_value,timedelta]
 
-    # Make axis logarithmic
-    if log_plot == True:
-        ax.set_yticks([2**i for i in range(0,8)])
-        xrange = [2**i for i in range(-1,8)]
-        xrange.insert(0,0)
-        ax.set_xticks(xrange)
-        ax.set_yscale('log', basey=2)
-        ax.set_xscale('log', basex=2)
+    timedelta += 1
 
-    plt.legend()
-    plt.title(f"Time delayed by {timedelta} days")
+fig, ax = plt.subplots()
+ax.scatter(prcp_avg.values, date_counts.values)
+ax.set_xlabel('Average Precipitation (mm)')
+ax.set_ylabel('Number of Potholes (Daily)')
+
+
+sorted_indices = np.argsort(x)
+sorted_x = x[sorted_indices]
+ax.plot(sorted_x, m * sorted_x + b, 'r', label='y={:.2f}x+{:.2f}; $r^2$={:.2f}; p={:.2f}'.format(m, b, r_value**2, p_value))
+
+# Make axis logarithmic
+if log_plot == True:
+    ax.set_yticks([2**i for i in range(0,8)])
+    xrange = [2**i for i in range(-1,8)]
+    xrange.insert(0,0)
+    ax.set_xticks(xrange)
+    ax.set_yscale('log', basey=2)
+    ax.set_xscale('log', basex=2)
+
+plt.legend()
+plt.title(f"Time delayed by {timedelta} days")
 
 
 # find pearson r between two time series representation

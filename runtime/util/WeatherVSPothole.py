@@ -224,6 +224,7 @@ class WeatherVSPotholes(object):
         rs2 = [r ** 2 for r in rs]
 
         offset = np.argmax(rs)
+        offset2 = np.argmax(rs2)
 
         f, ax = plt.subplots(2, 1, figsize=(14, 6), sharex=True)
         # f, ax = plt.subplots(figsize=(14, 3))
@@ -237,7 +238,7 @@ class WeatherVSPotholes(object):
         ax[1].plot(rs2)
         ax[1].axvline(np.argmax(rs2), color='r', linestyle='--', label='Peak $r^2$')
         ax[1].set(
-            title=f'{weather} leads potholes by {offset} days for $r^2$',
+            title=f'{weather} leads potholes by {offset2} days for $r^2$',
             xlabel='Days of Lag',
             ylabel='Pearson $r^2$')
         ax[1].legend()

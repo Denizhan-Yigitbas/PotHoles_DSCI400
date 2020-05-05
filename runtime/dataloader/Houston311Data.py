@@ -26,7 +26,7 @@ class Houston311Data():
         
         self.data_dictionary = {
             year: pd.read_csv(self.data_path + data_type_string + f"Piped{year}.csv")
-            for year in range(2015, 2020)
+            for year in range(2011, 2020)
         }
         
         self.data_df = pd.concat(list(self.data_dictionary.values()))

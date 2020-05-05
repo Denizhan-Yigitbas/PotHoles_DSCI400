@@ -54,6 +54,8 @@ for timedelta in [0,30, 60, 135, 141]:
     plt.title(f"Time delayed by {timedelta} days")
 
 plt.show()
+
+
 #
 # avg_temp.index = avg_temp.index.date
 #
