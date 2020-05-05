@@ -40,8 +40,9 @@ run: `python run_this.py potholes_by_month [YEAR]`
 
 run: `python run_this.py floods_by_month [YEAR]`
 
-#### The effects of temperature and precipitation on pothole formation around a specific weather statoin  count vs time bar graph for a specific year
-<i> This graph plots 3 main components: potholes, temperature, and precipitation. The graph counts the number of potholes formed around a specific radius of a single weather station and plots the temperature and precipitation data recorded at this weather station </i>
+#### Illustrating temperature and precipitation overlaid against pothole service requests near a single weather station.
+
+<i> This graph plots 3 main components: potholes, temperature, and precipitation. The graph counts the number of potholes formed around a specific radius of a single weather station and plots the temperature and precipitation data recorded at this weather station as line charts, with data from 2015 to 2019. </i>
 
 run: `python run_this.py pothole_vs_weather`
 
