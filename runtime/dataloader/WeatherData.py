@@ -149,5 +149,5 @@ class WeatherData(object):
         return avg_temp_df["value"]
     
 if __name__ == "__main__":
-    pass
+    WeatherData().weather_joined_to_csv()
     

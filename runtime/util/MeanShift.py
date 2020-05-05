@@ -22,8 +22,11 @@ class MeanShiftComp():
         percent = (coor - mini[ax]) / rang[ax]
         return percent * 365
     
-    
     def meanshift(self):
+        """
+        Performs mean shift by gathering data, modeling, and plotting
+        :return: plot
+        """
         pot_df = self.pot_df[['SR CREATE DATE', 'LATITUDE', 'LONGITUDE']] #pull relevant columns
         
         pot_df['SR CREATE DATE'] = pot_df['SR CREATE DATE'].apply(lambda x: x.dayofyear)

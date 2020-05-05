@@ -134,6 +134,9 @@ class DataViz(object):
         plt.show()
 
     def single_station_pothole_vs_weather(self):
+        """
+        Return precipitation data for a single station
+        """
         self.weatherVSpothole.temp_precip_potholes(2015, 2019, "USW00012918", 0.05)
 
     def overall_pothole_weather_correlation(self, rolling_r_window_size=45, type_weather='temp'):
@@ -170,6 +173,9 @@ class DataViz(object):
         self.weatherVSpothole.scatter_timelagged_weather_pothole_correlation(time_delta, weather_type, log_plot, show_regression)
 
     def mean_shift_3D(self):
+        """
+        Viz for meanshift grouping
+        """
         self.meanshift.meanshift()
 
 if __name__ == "__main__":
