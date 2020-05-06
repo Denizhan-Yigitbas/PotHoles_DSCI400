@@ -258,6 +258,12 @@ class WeatherVSPotholes(object):
         w = self.weatherDat
         p = self.potholeDat
 
+        numDays = 3*365-60 # properly formatted data only starts from March 20212
+        if timedelta > numDays:
+            print(f"Warning: only enough data to shift back by {numDays} days")
+            return
+
+
         if weather_type == 'prcp':
             avg_wthr = w.precipitation_df.groupby('date').value.agg('mean') / 10
             weather = 'Precipitation'
